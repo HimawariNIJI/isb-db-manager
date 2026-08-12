@@ -1,0 +1,234 @@
+@extends('layouts.app')
+
+@section('title', 'Tambah Mahasiswa - ISB DB Manager')
+
+@section('content')
+
+<div class="dashboard-wrapper">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-logo small">
+                ISB
+            </div>
+
+            <div>
+                <h5>ISB DB Manager</h5>
+                <span>Database Management</span>
+            </div>
+
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="{{ route('dashboard') }}" class="nav-item">
+                <span>▦</span>
+                Dashboard
+            </a>
+
+            <a href="{{ route('students.create') }}" class="nav-item active">
+                <span>＋</span>
+                Tambah Mahasiswa
+            </a>
+
+            <a href="{{ route('students.import') }}" class="nav-item">
+                <span>⇧</span>
+                Import CSV
+            </a>
+
+            <a href="{{ route('students.index') }}" class="nav-item">
+                <span>☷</span>
+                Daftar Mahasiswa
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+
+                <button
+                    type="submit"
+                    class="nav-item logout border-0 bg-transparent w-100 text-start"
+                >
+                    <span>↪</span>
+                    Logout
+                </button>
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <header class="top-header">
+
+            <div>
+                <h4>Tambah Mahasiswa</h4>
+
+                <p>
+                    Tambahkan mahasiswa secara manual
+                </p>
+            </div>
+
+            <div class="admin-profile">
+
+                <div class="admin-avatar">
+                    A
+                </div>
+
+                <div>
+                    <strong>Administrator</strong>
+                    <small>Dosen</small>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <div class="content-container">
+
+            <div class="section-card">
+
+                <div class="section-header">
+
+                    <div>
+                        <h5>Data Mahasiswa</h5>
+
+                        <p>
+                            Masukkan informasi mahasiswa yang akan dibuatkan akun database
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <form>
+
+                    <div class="row g-4">
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                NIM
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control custom-input"
+                                placeholder="Contoh: 22101001"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Nama Mahasiswa
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control custom-input"
+                                placeholder="Masukkan nama lengkap"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                class="form-control custom-input"
+                                placeholder="nama@student.uc.ac.id"
+                            >
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Kelas
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control custom-input"
+                                placeholder="Contoh: ISB-4"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <hr class="my-4">
+
+
+                    <div class="database-info">
+
+                        <div class="database-info-icon">
+                            DB
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Akun database akan dibuat otomatis
+                            </strong>
+
+                            <p>
+                                Username dan password MySQL akan dibuat setelah data mahasiswa disimpan.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-actions">
+
+                        <a
+                            href="{{ route('dashboard') }}"
+                            class="btn btn-outline-primary"
+                        >
+                            Batal
+                        </a>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            Tambahkan Mahasiswa
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+@endsection
