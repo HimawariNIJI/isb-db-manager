@@ -24,7 +24,7 @@
 
         <nav class="sidebar-nav">
 
-            <a href="#" class="nav-item active">
+            <a href="{{ route('dashboard') }}" class="nav-item active">
                 <span>▦</span>
                 Dashboard
             </a>
@@ -107,7 +107,7 @@
 
                         <div>
                             <span>Total Mahasiswa</span>
-                            <h3>0</h3>
+                            <h3>23</h3>
                         </div>
 
                     </div>
@@ -125,7 +125,7 @@
 
                         <div>
                             <span>Akun Aktif</span>
-                            <h3>0</h3>
+                            <h3>23</h3>
                         </div>
 
                     </div>
@@ -143,7 +143,7 @@
 
                         <div>
                             <span>Pending</span>
-                            <h3>0</h3>
+                            <h3>10</h3>
                         </div>
 
                     </div>
@@ -222,11 +222,7 @@
 
                     <div class="form-actions">
 
-                        <button type="button" class="btn btn-outline-primary">
-                            Import CSV
-                        </button>
-
-                        <button type="button" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary custom-btn">
                             Tambahkan Mahasiswa
                         </button>
 
@@ -252,7 +248,7 @@
 
                     </div>
 
-                    <button class="btn btn-outline-primary">
+                    <button type="button" class="btn btn-outline-primary custom-btn">
                         Export CSV
                     </button>
 

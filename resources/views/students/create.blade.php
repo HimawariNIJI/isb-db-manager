@@ -205,16 +205,9 @@
 
                     <div class="form-actions">
 
-                        <a
-                            href="{{ route('dashboard') }}"
-                            class="btn btn-outline-primary"
-                        >
-                            Batal
-                        </a>
-
                         <button
                             type="submit"
-                            class="btn btn-primary"
+                            class="btn btn-primary custom-btn"
                         >
                             Tambahkan Mahasiswa
                         </button>

@@ -92,6 +92,13 @@ body {
     font-size: 14px;
 }
 
+.login-error {
+    text-align: center;
+    font-size: 14px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+}
+
 
 /* =========================
    FORM
@@ -160,6 +167,12 @@ body {
     display: flex;
 }
 
+.custom-btn {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 9px 16px;
+    border-radius: 8px;
+}
 
 /* =========================
    SIDEBAR
@@ -671,13 +684,75 @@ body {
     font-size: 12px;
 }
 
-.upload-area input {
+.custom-file-input {
+    width: 100%;
     max-width: 450px;
+
+    height: 38px;
 
     margin-left: auto;
     margin-right: auto;
 
+    display: flex;
+    align-items: center;
+
     background: white;
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    overflow: hidden;
+
+    text-align: left;
+}
+
+.custom-file-input input[type="file"] {
+    display: none;
+}
+
+.file-button {
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 14px;
+
+    margin: 0;
+
+    background: #f8fafc;
+
+    border-right: 1px solid var(--border);
+
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+
+    color: var(--text);
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.file-button:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+#fileName {
+    padding-left: 10px;
+
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+
+    color: var(--muted);
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .upload-area small {
@@ -688,6 +763,18 @@ body {
     color: var(--muted);
 
     font-size: 11px;
+}
+
+.student-count {
+    font-size: 12px;
+    font-weight: 500;
+
+    padding: 6px 10px;
+
+    border-radius: 6px;
+
+    background: var(--primary-light);
+    color: var(--primary);
 }
 
 

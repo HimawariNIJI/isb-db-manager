@@ -120,14 +120,14 @@
 
                         <a
                             href="{{ route('students.import') }}"
-                            class="btn btn-outline-primary"
+                            class="btn btn-outline-primary custom-btn"
                         >
                             Import CSV
                         </a>
 
                         <a
                             href="{{ route('students.create') }}"
-                            class="btn btn-primary"
+                            class="btn btn-primary custom-btn"
                         >
                             + Tambah Mahasiswa
                         </a>

@@ -134,11 +134,23 @@
                         Drag & drop file CSV di sini atau pilih file dari komputer
                     </p>
 
-                    <input
-                        type="file"
-                        class="form-control custom-input mt-3"
-                        accept=".csv"
-                    >
+                    <div class="custom-file-input mt-3">
+
+                        <label for="csvFile" class="file-button">
+                            Choose File
+                        </label>
+
+                        <span id="fileName">
+                            No file chosen
+                        </span>
+
+                        <input
+                            type="file"
+                            id="csvFile"
+                            accept=".csv"
+                        >
+
+                    </div>
 
                     <small>
                         Format yang didukung: .csv
@@ -188,14 +200,14 @@
 
                     <button
                         type="button"
-                        class="btn btn-outline-primary"
+                        class="btn btn-outline-primary custom-btn"
                     >
                         Download Template CSV
                     </button>
 
                     <button
                         type="button"
-                        class="btn btn-primary"
+                        class="btn btn-primary custom-btn"
                     >
                         Preview Data
                     </button>
@@ -206,7 +218,6 @@
 
 
             <!-- Preview -->
-
             <div class="section-card mt-4">
 
                 <div class="section-header">
@@ -216,27 +227,78 @@
                         <h5>Preview Data</h5>
 
                         <p>
-                            Data mahasiswa dari file CSV akan muncul di sini
+                            Periksa data mahasiswa sebelum melakukan import
                         </p>
 
                     </div>
 
+                    <span class="student-count">
+                        2 Mahasiswa
+                    </span>
+
                 </div>
 
 
-                <div class="empty-state">
+                <div class="table-responsive">
 
-                    <div class="empty-icon">
-                        📄
-                    </div>
+                    <table class="table custom-table align-middle">
 
-                    <strong>
-                        Belum ada file
-                    </strong>
+                        <thead>
 
-                    <p>
-                        Upload file CSV untuk melihat data mahasiswa.
-                    </p>
+                            <tr>
+                                <th>No</th>
+                                <th>NIM</th>
+                                <th>Nama</th>
+                                <th>Email</th>
+                                <th>Kelas</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <!-- Contoh data preview -->
+
+                            <tr>
+                                <td>1</td>
+                                <td>22101001</td>
+                                <td>Budi</td>
+                                <td>budi@student.uc.ac.id</td>
+                                <td>ISB-4</td>
+                            </tr>
+
+                            <tr>
+                                <td>2</td>
+                                <td>22101002</td>
+                                <td>Andi</td>
+                                <td>andi@student.uc.ac.id</td>
+                                <td>ISB-4</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- Submit / Import -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="btn btn-outline-primary custom-btn"
+                    >
+                        Batal
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-primary custom-btn"
+                    >
+                        Import Mahasiswa
+                    </button>
 
                 </div>
 
@@ -247,5 +309,20 @@
     </main>
 
 </div>
+<script>
+    const csvFile = document.getElementById('csvFile');
+    const fileName = document.getElementById('fileName');
 
+    csvFile.addEventListener('change', function () {
+
+        if (this.files.length > 0) {
+            fileName.textContent = this.files[0].name;
+            fileName.style.color = 'var(--text)';
+        } else {
+            fileName.textContent = 'No file chosen';
+            fileName.style.color = 'var(--muted)';
+        }
+
+    });
+</script>
 @endsection
