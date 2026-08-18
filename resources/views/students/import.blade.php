@@ -177,18 +177,18 @@
 
 
                     <code>
-                        nim,nama,email,kelas
+                        NIM,Nama,Email,Kelas
                     </code>
 
 
                     <div class="csv-example">
 
                         <code>
-                            22101001,Budi,budi@student.uc.ac.id,ISB-4
+                            0706022410098,Budi,budi@student.uc.ac.id,"Database A"
                         </code>
 
                         <code>
-                            22101002,Andi,andi@student.uc.ac.id,ISB-4
+                            0706022410099,Andi,andi@student.uc.ac.id,"Database B"
                         </code>
 
                     </div>

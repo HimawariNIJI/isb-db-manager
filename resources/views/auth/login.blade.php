@@ -19,7 +19,7 @@
             </h3>
 
             <p class="login-subtitle">
-                Login untuk mengelola akun database mahasiswa TEST
+                Login untuk mengelola akun database mahasiswa
             </p>
 
         </div>

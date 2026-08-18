@@ -119,6 +119,13 @@
                     <div class="d-flex gap-2">
 
                         <a
+                            href="{{ route('students.export') }}"
+                            class="btn btn-outline-primary custom-btn"
+                        >
+                            Export CSV
+                        </a>
+
+                        <a
                             href="{{ route('students.import') }}"
                             class="btn btn-outline-primary custom-btn"
                         >
@@ -143,39 +150,37 @@
 
                     <div class="col-md-5">
 
-                        <div class="input-group">
+                        <form
+                            action="{{ route('students.index') }}"
+                            method="GET"
+                        >
 
-                            <span class="input-group-text bg-white">
-                                🔍
-                            </span>
+                            <div class="input-group">
 
-                            <input
-                                type="text"
-                                class="form-control custom-input"
-                                placeholder="Cari NIM atau nama mahasiswa..."
-                            >
+                                <span class="input-group-text bg-white">
+                                    🔍
+                                </span>
 
-                        </div>
+                                <input
+                                    type="text"
+                                    name="search"
+                                    value="{{ request('search') }}"
+                                    class="form-control custom-input"
+                                    placeholder="Cari NIM atau nama mahasiswa..."
+                                >
 
-                    </div>
+                                @if(request('search'))
+                                    <a
+                                        href="{{ route('students.index') }}"
+                                        class="btn btn-outline-secondary"
+                                    >
+                                        ✕
+                                    </a>
+                                @endif
 
-                    <div class="col-md-3">
+                            </div>
 
-                        <select class="form-select custom-input">
-
-                            <option selected>
-                                Semua Status
-                            </option>
-
-                            <option>
-                                Aktif
-                            </option>
-
-                            <option>
-                                Pending
-                            </option>
-
-                        </select>
+                        </form>
 
                     </div>
 
@@ -190,46 +195,89 @@
 
                         <thead>
 
-                            <tr>
-
-                                <th>NIM</th>
-
-                                <th>Nama</th>
-
-                                <th>Email</th>
-
-                                <th>Username MySQL</th>
-
-                                <th>Status</th>
-
-                                <th>Aksi</th>
-
-                            </tr>
+                        <tr>
+                            <th>NIM</th>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Kelas</th>
+                            <th>Database MySQL</th>
+                            <th>Username MySQL</th>
+                            <th>Aksi</th>
+                        </tr>
 
                         </thead>
 
 
                         <tbody>
 
-                            <tr>
+                            @forelse($students as $student)
 
-                                <td colspan="6" class="empty-state">
+                                <tr>
 
-                                    <div class="empty-icon">
-                                        👨‍🎓
-                                    </div>
+                                    <td>
+                                        {{ $student->nim }}
+                                    </td>
 
-                                    <strong>
-                                        Belum ada mahasiswa
-                                    </strong>
+                                    <td>
+                                        {{ $student->nama }}
+                                    </td>
 
-                                    <p>
-                                        Data mahasiswa yang sudah dibuat akan muncul di sini.
-                                    </p>
+                                    <td>
+                                        {{ $student->email ?? '-' }}
+                                    </td>
 
-                                </td>
+                                    <td>
+                                        {{ $student->kelas ?? '-' }}
+                                    </td>
 
-                            </tr>
+                                    <td>
+                                        {{ $student->mysql_database }}
+                                    </td>
+
+                                    <td>
+                                        {{ $student->mysql_username }}
+                                    </td>
+
+                                    <td>
+
+                                        <a
+                                            href="{{ route('students.show', $student->id) }}"
+                                            class="btn btn-sm btn-outline-primary"
+                                        >
+                                            Detail
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+
+                            @empty
+
+                                <tr>
+
+                                    <td colspan="7">
+
+                                        <div class="empty-state">
+
+                                            <div class="empty-icon">
+                                                👨‍🎓
+                                            </div>
+
+                                            <strong>
+                                                Belum ada mahasiswa
+                                            </strong>
+
+                                            <p>
+                                                Data mahasiswa yang sudah dibuat akan muncul di sini.
+                                            </p>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            @endforelse
 
                         </tbody>
 

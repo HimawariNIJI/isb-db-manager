@@ -857,3 +857,143 @@ body {
 .input-group .custom-input:focus {
     border-left: none;
 }
+
+.student-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.detail-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.detail-item strong {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.credential-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.credential-box strong {
+    display: block;
+    margin-top: 4px;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+}
+
+@media (max-width: 768px) {
+
+    .student-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .credential-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+}
+
+.delete-section {
+    border: 1px solid #fecaca;
+}
+
+.delete-warning {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px;
+    background: #fff7f7;
+    border-radius: 10px;
+}
+
+.delete-warning strong {
+    font-size: 14px;
+}
+
+.delete-warning p {
+    margin: 5px 0 0;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.btn-danger {
+    background: #dc2626;
+    border-color: #dc2626;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+    border-color: #b91c1c;
+}
+
+@media (max-width: 768px) {
+
+    .delete-warning {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+}
+
+.credential-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.change-password-box {
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.change-password-box .section-header {
+    margin-bottom: 20px;
+}
+
+.change-password-box h6 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.change-password-box label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+}
+
+@media (max-width: 768px) {
+
+    .credential-actions {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+
+}

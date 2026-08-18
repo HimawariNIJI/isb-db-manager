@@ -114,6 +114,22 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'mysql_lab' => [
+            'driver' => 'mysql',
+            'host' => env('LAB_DB_HOST'),
+            'port' => env('LAB_DB_PORT', 3308),
+            'database' => null,
+            'username' => env('LAB_DB_USERNAME'),
+            'password' => env('LAB_DB_PASSWORD'),
+            'unix_socket' => '',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+        ],
+        
     ],
 
     /*

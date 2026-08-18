@@ -110,8 +110,18 @@
 
                 </div>
 
-
-                <form>
+                @if(session('error'))
+                    <div class="alert alert-danger login-error">
+                        {{ session('error') }}
+                    </div>
+                @endif
+                @if($errors->any())
+                    <div class="alert alert-danger login-error">
+                        {{ $errors->first() }}
+                    </div>
+                @endif
+                <form action="{{ route('students.store') }}" method="POST">
+                    @csrf
 
                     <div class="row g-4">
 
@@ -123,8 +133,10 @@
 
                             <input
                                 type="text"
+                                name="nim"
                                 class="form-control custom-input"
-                                placeholder="Contoh: 22101001"
+                                placeholder="Contoh: 0706022410099"
+                                value="{{ old('nim') }}"
                                 required
                             >
 
@@ -139,8 +151,10 @@
 
                             <input
                                 type="text"
+                                name="nama"
                                 class="form-control custom-input"
                                 placeholder="Masukkan nama lengkap"
+                                value="{{ old('nama') }}"
                                 required
                             >
 
@@ -155,8 +169,10 @@
 
                             <input
                                 type="email"
+                                name="email"
                                 class="form-control custom-input"
                                 placeholder="nama@student.uc.ac.id"
+                                value="{{ old('email') }}"
                             >
 
                         </div>
@@ -170,8 +186,10 @@
 
                             <input
                                 type="text"
+                                name="kelas"
                                 class="form-control custom-input"
-                                placeholder="Contoh: ISB-4"
+                                placeholder="Masukkan kelas"
+                                value="{{ old('kelas') }}"
                             >
 
                         </div>

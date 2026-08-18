@@ -107,25 +107,7 @@
 
                         <div>
                             <span>Total Mahasiswa</span>
-                            <h3>23</h3>
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-4">
-
-                    <div class="stat-card">
-
-                        <div class="stat-icon green">
-                            ✓
-                        </div>
-
-                        <div>
-                            <span>Akun Aktif</span>
-                            <h3>23</h3>
+                            <h3>{{ $totalStudents }}</h3>
                         </div>
 
                     </div>
@@ -138,12 +120,33 @@
                     <div class="stat-card">
 
                         <div class="stat-icon orange">
-                            ⏳
+                            🗄
                         </div>
 
                         <div>
-                            <span>Pending</span>
-                            <h3>10</h3>
+                            <span>Total Database</span>
+
+                            <h3>
+                                {{ $totalDatabases }}
+                            </h3>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon green">
+                            +
+                        </div>
+
+                        <div>
+                            <span>Ditambahkan Hari Ini</span>
+                            <h3>{{ $todayStudents }}</h3>
                         </div>
 
                     </div>
@@ -151,87 +154,6 @@
                 </div>
 
             </div>
-
-
-            <!-- Add Student -->
-            <div class="section-card mb-4">
-
-                <div class="section-header">
-
-                    <div>
-                        <h5>Tambah Mahasiswa</h5>
-
-                        <p>
-                            Buat akun database untuk mahasiswa
-                        </p>
-                    </div>
-
-                </div>
-
-
-                <form>
-
-                    <div class="row g-3">
-
-                        <div class="col-md-4">
-
-                            <label class="form-label">
-                                NIM
-                            </label>
-
-                            <input
-                                type="text"
-                                class="form-control custom-input"
-                                placeholder="Contoh: 22101001"
-                            >
-
-                        </div>
-
-
-                        <div class="col-md-4">
-
-                            <label class="form-label">
-                                Nama Mahasiswa
-                            </label>
-
-                            <input
-                                type="text"
-                                class="form-control custom-input"
-                                placeholder="Masukkan nama"
-                            >
-
-                        </div>
-
-
-                        <div class="col-md-4">
-
-                            <label class="form-label">
-                                Email
-                            </label>
-
-                            <input
-                                type="email"
-                                class="form-control custom-input"
-                                placeholder="email@student.uc.ac.id"
-                            >
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="form-actions">
-
-                        <button type="submit" class="btn btn-primary custom-btn">
-                            Tambahkan Mahasiswa
-                        </button>
-
-                    </div>
-
-                </form>
-
-            </div>
-
 
             <!-- Student List -->
             <div class="section-card">
@@ -243,14 +165,21 @@
                         <h5>Daftar Mahasiswa</h5>
 
                         <p>
-                            Mahasiswa yang telah ditambahkan
+                            Mahasiswa yang Baru Ditambahkan
                         </p>
 
                     </div>
 
-                    <button type="button" class="btn btn-outline-primary custom-btn">
-                        Export CSV
-                    </button>
+                    <div class="d-flex gap-2">
+
+                        <a
+                            href="{{ route('students.index') }}"
+                            class="btn btn-primary custom-btn"
+                        >
+                            Lihat Semua
+                        </a>
+
+                    </div>
 
                 </div>
 
@@ -261,40 +190,77 @@
 
                         <thead>
 
-                            <tr>
-
-                                <th>NIM</th>
-                                <th>Nama</th>
-                                <th>Email</th>
-                                <th>Username MySQL</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
-
-                            </tr>
+                        <tr>
+                            <th>NIM</th>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Kelas</th>
+                            <th>Database MySQL</th>
+                            <th>Username MySQL</th>
+                        </tr>
 
                         </thead>
 
+
                         <tbody>
 
-                            <tr>
+                            @forelse($students as $student)
 
-                                <td colspan="6" class="empty-state">
+                                <tr>
 
-                                    <div class="empty-icon">
-                                        👨‍🎓
-                                    </div>
+                                    <td>
+                                        {{ $student->nim }}
+                                    </td>
 
-                                    <strong>
-                                        Belum ada mahasiswa
-                                    </strong>
+                                    <td>
+                                        {{ $student->nama }}
+                                    </td>
 
-                                    <p>
-                                        Tambahkan mahasiswa untuk mulai membuat akun database.
-                                    </p>
+                                    <td>
+                                        {{ $student->email ?? '-' }}
+                                    </td>
 
-                                </td>
+                                    <td>
+                                        {{ $student->kelas ?? '-' }}
+                                    </td>
 
-                            </tr>
+                                    <td>
+                                        {{ $student->mysql_database }}
+                                    </td>
+
+                                    <td>
+                                        {{ $student->mysql_username }}
+                                    </td>
+
+                                </tr>
+
+                            @empty
+
+                                <tr>
+
+                                    <td colspan="6">
+
+                                        <div class="empty-state">
+
+                                            <div class="empty-icon">
+                                                👨‍🎓
+                                            </div>
+
+                                            <strong>
+                                                Belum ada mahasiswa
+                                            </strong>
+
+                                            <p>
+                                                Data mahasiswa yang sudah dibuat akan muncul di sini.
+                                            </p>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            @endforelse
 
                         </tbody>
 
