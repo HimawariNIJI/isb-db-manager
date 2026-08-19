@@ -642,13 +642,19 @@ body {
 
     background: #fafbfe;
 
-    transition: 0.2s;
+    transition: all 0.2s ease;
 }
 
 .upload-area:hover {
     border-color: var(--primary);
 
     background: var(--primary-light);
+}
+
+.upload-area.drag-over {
+    border-color: #183883;
+    background: #f1f5ff;
+    transform: scale(1.01);
 }
 
 .upload-icon {

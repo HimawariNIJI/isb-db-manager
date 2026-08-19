@@ -127,7 +127,7 @@
 
                     <!-- Upload Area -->
 
-                    <div class="upload-area">
+                    <div class="upload-area" id="uploadArea">
 
                         <div class="upload-icon">
                             ⇧
@@ -311,6 +311,7 @@
 </div>
 <script>
 
+    const uploadArea = document.getElementById('uploadArea');
     const csvFile = document.getElementById('csvFile');
     const fileName = document.getElementById('fileName');
 
@@ -355,6 +356,8 @@
             previewTableBody.innerHTML =
                 '';
 
+            handleFile(this.files[0]);
+
         } else {
 
             fileName.textContent =
@@ -365,10 +368,107 @@
 
             previewSection.style.display =
                 'none';
+
+            resetFile();
+
         }
 
     });
 
+    // =========================
+    // Handle File
+    // =========================
+
+    function handleFile(file) {
+
+        fileName.textContent = file.name;
+
+        fileName.style.color = 'var(--text)';
+
+    }
+
+
+    // =========================
+    // Reset File
+    // =========================
+
+    function resetFile() {
+
+        fileName.textContent = 'No file chosen';
+
+        fileName.style.color = 'var(--muted)';
+
+        csvFile.value = '';
+
+    }
+
+    // =========================
+    // Drag Over
+    // =========================
+
+    uploadArea.addEventListener('dragover', function (e) {
+
+        e.preventDefault();
+
+        uploadArea.classList.add('drag-over');
+
+    });
+
+
+    // =========================
+    // Drag Leave
+    // =========================
+
+    uploadArea.addEventListener('dragleave', function (e) {
+
+        e.preventDefault();
+
+        uploadArea.classList.remove('drag-over');
+
+    });
+
+
+    // =========================
+    // Drop
+    // =========================
+
+    uploadArea.addEventListener('drop', function (e) {
+
+        e.preventDefault();
+
+        uploadArea.classList.remove('drag-over');
+
+        const files = e.dataTransfer.files;
+
+        if (files.length > 0) {
+
+            const file = files[0];
+
+            // Pastikan CSV
+            if (
+                file.type === 'text/csv' ||
+                file.name.toLowerCase().endsWith('.csv')
+            ) {
+
+                // Masukkan file ke input
+                const dataTransfer = new DataTransfer();
+
+                dataTransfer.items.add(file);
+
+                csvFile.files = dataTransfer.files;
+
+                // Update nama file
+                handleFile(file);
+
+            } else {
+
+                alert('Silakan pilih file CSV.');
+
+            }
+
+        }
+
+    });
 
     /*
     |--------------------------------------------------------------------------
