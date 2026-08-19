@@ -22,7 +22,8 @@ class StudentController extends Controller
 
             })
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         return view('students.index', compact('students', 'search'));
     }
@@ -317,5 +318,454 @@ class StudentController extends Controller
             200,
             $headers
         );
+    }
+    public function downloadTemplate()
+    {
+        $filename = 'template_mahasiswa.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function () {
+
+            $file = fopen('php://output', 'w');
+
+            // UTF-8 BOM agar Excel membaca CSV dengan benar
+            fprintf(
+                $file,
+                chr(0xEF) . chr(0xBB) . chr(0xBF)
+            );
+
+            // Header
+            fputcsv($file, [
+                'nim',
+                'nama',
+                'email',
+                'kelas',
+            ]);
+
+            // Contoh data
+            fputcsv($file, [
+                '0706022410098',
+                'Budi',
+                'budi@student.uc.ac.id',
+                'Database A',
+            ]);
+
+            fputcsv($file, [
+                '0706022410099',
+                'Andi',
+                'andi@student.uc.ac.id',
+                'Database B',
+            ]);
+
+            fclose($file);
+        };
+
+        return response()->stream(
+            $callback,
+            200,
+            $headers
+        );
+    }
+    public function import(Request $request)
+    {
+
+        $request->validate([
+            'csv_file' => [
+                'required',
+                'file',
+                'mimes:csv,txt',
+                'max:2048',
+            ],
+        ]);
+
+        $file = $request->file('csv_file');
+
+        $handle = fopen($file->getRealPath(), 'r');
+
+        if (!$handle) {
+            return back()->with(
+                'error',
+                'File CSV tidak dapat dibaca.'
+            );
+        }
+
+        try {
+
+            /*
+            |--------------------------------------------------------------------------
+            | Ambil header
+            |--------------------------------------------------------------------------
+            */
+
+            $header = fgetcsv($handle);
+
+            if (!$header) {
+                fclose($handle);
+
+                return back()->with(
+                    'error',
+                    'File CSV kosong.'
+                );
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Normalisasi header
+            |--------------------------------------------------------------------------
+            */
+
+            $header = array_map(function ($value) {
+
+                // Hapus UTF-8 BOM
+                $value = preg_replace('/^\xEF\xBB\xBF/', '', $value);
+
+                return strtolower(trim($value));
+
+            }, $header);
+
+            $expectedHeader = [
+                'nim',
+                'nama',
+                'email',
+                'kelas',
+            ];
+
+
+            if ($header !== $expectedHeader) {
+
+                fclose($handle);
+
+                return back()->with(
+                    'error',
+                    'Format CSV tidak sesuai. Gunakan nim,nama,email,kelas.'
+                );
+            }
+
+
+            $successCount = 0;
+            $errors = [];
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Proses setiap mahasiswa
+            |--------------------------------------------------------------------------
+            */
+
+            while (($row = fgetcsv($handle)) !== false) {
+
+                // Lewati baris kosong
+                if (
+                    count($row) === 1 &&
+                    trim($row[0]) === ''
+                ) {
+                    continue;
+                }
+
+                if (count($row) < 4) {
+
+                    $errors[] =
+                        'Ada baris CSV yang tidak memiliki 4 kolom.';
+
+                    continue;
+                }
+
+
+                $nim = trim($row[0]);
+                $nama = trim($row[1]);
+                $email = trim($row[2]);
+                $kelas = trim($row[3]);
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Validasi
+                |--------------------------------------------------------------------------
+                */
+
+                if ($nim === '' || $nama === '') {
+
+                    $errors[] =
+                        'Data NIM atau Nama kosong.';
+
+                    continue;
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Cek NIM sudah ada di Laravel
+                |--------------------------------------------------------------------------
+                */
+
+                if (Student::where('nim', $nim)->exists()) {
+
+                    $errors[] =
+                        "NIM {$nim} sudah terdaftar.";
+
+                    continue;
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Prepare MySQL data
+                |--------------------------------------------------------------------------
+                */
+
+                $databaseName =
+                    'student_' . $nim;
+
+                $safeDatabaseName =
+                    preg_replace(
+                        '/[^a-zA-Z0-9_]/',
+                        '',
+                        $databaseName
+                    );
+
+                $mysqlUsername =
+                    $nim;
+
+                $mysqlPassword =
+                    Str::random(12);
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Initialize variables
+                |--------------------------------------------------------------------------
+                */
+
+                $mysql = null;
+
+                $databaseCreated = false;
+
+                $userCreated = false;
+
+
+                try {
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Koneksi MySQL Lab
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $mysql = DB::connection('mysql_lab'); 
+
+                    $pdo = $mysql->getPdo();
+                    
+                    /*
+                    |--------------------------------------------------------------------------
+                    | CREATE DATABASE
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $mysql->statement(
+                        "CREATE DATABASE `$safeDatabaseName`"
+                    );
+
+                    $databaseCreated = true;
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | CREATE USER
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $quotedUsername = $pdo->quote($mysqlUsername);
+                    $quotedPassword = $pdo->quote($mysqlPassword);
+
+                    $createUserSql =
+                        "CREATE USER {$quotedUsername}@'%' IDENTIFIED BY {$quotedPassword}";
+
+                    $mysql->statement($createUserSql);
+
+                    $userCreated = true;
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | GRANT ACCESS
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $mysql->statement(
+                        "GRANT ALL PRIVILEGES
+                        ON `$safeDatabaseName`.*
+                        TO {$quotedUsername}@'%'"
+                    );
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | FLUSH PRIVILEGES
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $mysql->statement(
+                        "FLUSH PRIVILEGES"
+                    );
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Simpan ke database Laravel
+                    |--------------------------------------------------------------------------
+                    */
+
+                    Student::create([
+                        'nim' =>
+                            $nim,
+
+                        'nama' =>
+                            $nama,
+
+                        'email' =>
+                            $email ?: null,
+
+                        'kelas' =>
+                            $kelas ?: null,
+
+                        'mysql_database' =>
+                            $safeDatabaseName,
+
+                        'mysql_username' =>
+                            $mysqlUsername,
+
+                        'mysql_password' =>
+                            $mysqlPassword,
+                    ]);
+
+
+                    $successCount++;
+
+
+                } catch (\Throwable $e) {
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Cleanup jika proses gagal
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if ($mysql !== null) {
+
+                        /*
+                        |------------------------------------------------------------------
+                        | Hapus user MySQL jika sudah dibuat
+                        |------------------------------------------------------------------
+                        */
+
+                        if ($userCreated) {
+
+                            try {
+
+                                $quotedUsername =
+                                    $mysql->getPdo()->quote($mysqlUsername);
+
+                                $mysql->statement(
+                                    "DROP USER IF EXISTS {$quotedUsername}@'%'"
+                                );
+
+                            } catch (\Throwable $cleanupException) {
+
+                                // Abaikan error cleanup
+                            }
+                        }
+
+
+                        /*
+                        |------------------------------------------------------------------
+                        | Hapus database jika sudah dibuat
+                        |------------------------------------------------------------------
+                        */
+
+                        if ($databaseCreated) {
+
+                            try {
+
+                                $mysql->statement(
+                                    "DROP DATABASE IF EXISTS `$safeDatabaseName`"
+                                );
+
+                            } catch (\Throwable $cleanupException) {
+
+                                // Abaikan error cleanup
+                            }
+                        }
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Simpan error
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $errors[] =
+                        "NIM {$nim}: " . $e->getMessage();
+                }
+            }
+
+
+            fclose($handle);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Hasil
+            |--------------------------------------------------------------------------
+            */
+
+            if ($successCount === 0) {
+
+                return back()
+                    ->with(
+                        'error',
+                        'Tidak ada mahasiswa yang berhasil diimport.'
+                    )
+                    ->with(
+                        'import_errors',
+                        $errors
+                    );
+            }
+
+
+            return redirect()
+                ->route('students.index')
+                ->with(
+                    'success',
+                    "{$successCount} mahasiswa berhasil diimport."
+                )
+                ->with(
+                    'import_errors',
+                    $errors
+                );
+
+
+        } catch (\Exception $e) {
+
+            fclose($handle);
+
+            return back()->with(
+                'error',
+                'Gagal melakukan import: ' . $e->getMessage()
+            );
+        }
+    }
+    public function create()
+    {
+        return view('students.create');
+    }
+
+    public function importPage()
+    {
+        return view('students.import');
     }
 }

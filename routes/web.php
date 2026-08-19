@@ -3,7 +3,6 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\StudentController;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -37,16 +36,20 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 // Student Management
 // =========================
 
-Route::get('/students/create', function () {
-    return view('students.create');
-})->name('students.create');
+Route::get('/students/create', [StudentController::class, 'create'])
+    ->name('students.create');
 
 Route::post('/students', [StudentController::class, 'store'])
     ->name('students.store');
 
-Route::get('/students/import', function () {
-    return view('students.import');
-})->name('students.import');
+Route::get('/students/import', [StudentController::class, 'importPage'])
+    ->name('students.import');
+
+Route::post('/students/import', [StudentController::class, 'import'])
+    ->name('students.import.store');
+
+Route::get('/students/template', [StudentController::class, 'downloadTemplate'])
+    ->name('students.template');
 
 Route::get('/students', [StudentController::class, 'index'])
     ->name('students.index');

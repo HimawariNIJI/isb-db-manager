@@ -285,6 +285,78 @@
 
                 </div>
 
+                @if($students->hasPages())
+
+                    <div class="student-pagination-wrapper">
+
+                        <div class="student-pagination">
+
+                            {{-- Previous --}}
+                            @if($students->onFirstPage())
+
+                                <span class="student-pagination-box disabled">
+                                    ‹
+                                </span>
+
+                            @else
+
+                                <a
+                                    href="{{ $students->previousPageUrl() }}"
+                                    class="student-pagination-box"
+                                >
+                                    ‹
+                                </a>
+
+                            @endif
+
+
+                            {{-- Page Numbers --}}
+                            @foreach($students->getUrlRange(1, $students->lastPage()) as $page => $url)
+
+                                @if($page == $students->currentPage())
+
+                                    <span class="student-pagination-box active">
+                                        {{ $page }}
+                                    </span>
+
+                                @else
+
+                                    <a
+                                        href="{{ $url }}"
+                                        class="student-pagination-box"
+                                    >
+                                        {{ $page }}
+                                    </a>
+
+                                @endif
+
+                            @endforeach
+
+
+                            {{-- Next --}}
+                            @if($students->hasMorePages())
+
+                                <a
+                                    href="{{ $students->nextPageUrl() }}"
+                                    class="student-pagination-box"
+                                >
+                                    ›
+                                </a>
+
+                            @else
+
+                                <span class="student-pagination-box disabled">
+                                    ›
+                                </span>
+
+                            @endif
+
+                        </div>
+
+                    </div>
+
+                @endif
+
             </div>
 
         </div>

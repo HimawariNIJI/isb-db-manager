@@ -101,208 +101,208 @@
 
         <div class="content-container">
 
-            <div class="section-card">
+            <form
+                action="{{ route('students.import.store') }}"
+                method="POST"
+                enctype="multipart/form-data"
+                id="importForm"
+            >
+                @csrf
 
-                <div class="section-header">
+                <div class="section-card">
 
-                    <div>
+                    <div class="section-header">
 
-                        <h5>Import Data Mahasiswa</h5>
+                        <div>
+
+                            <h5>Import Data Mahasiswa</h5>
+
+                            <p>
+                                Upload file CSV yang berisi data mahasiswa
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Upload Area -->
+
+                    <div class="upload-area">
+
+                        <div class="upload-icon">
+                            ⇧
+                        </div>
+
+                        <h6>
+                            Upload file CSV
+                        </h6>
 
                         <p>
-                            Upload file CSV yang berisi data mahasiswa
+                            Drag & drop file CSV di sini atau pilih file dari komputer
                         </p>
+
+                        <div class="custom-file-input mt-3">
+
+                            <label for="csvFile" class="file-button">
+                                Choose File
+                            </label>
+
+                            <span id="fileName">
+                                No file chosen
+                            </span>
+
+                            <input
+                                type="file"
+                                id="csvFile"
+                                name="csv_file"
+                                accept=".csv"
+                            >
+
+                        </div>
+
+                        <small>
+                            Format yang didukung: .csv
+                        </small>
+
+                    </div>
+
+
+                    <!-- CSV Format -->
+
+                    <div class="csv-format">
+
+                        <div>
+
+                            <strong>
+                                Format CSV
+                            </strong>
+
+                            <p>
+                                Pastikan file CSV memiliki kolom berikut:
+                            </p>
+
+                        </div>
+
+
+                        <code>
+                            nim,nama,email,kelas
+                        </code>
+
+
+                        <div class="csv-example">
+
+                            <code>
+                                0706022410098,Budi,budi@student.uc.ac.id,"Database A"
+                            </code>
+
+                            <code>
+                                0706022410099,Andi,andi@student.uc.ac.id,"Database B"
+                            </code>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-actions">
+
+                        <a
+                            href="{{ route('students.template') }}"
+                            class="btn btn-outline-primary custom-btn"
+                        >
+                            Download Template CSV
+                        </a>
+
+                        <button
+                            type="button"
+                            id="previewButton"
+                            class="btn btn-primary custom-btn"
+                        >
+                            Preview Data
+                        </button>
 
                     </div>
 
                 </div>
 
 
-                <!-- Upload Area -->
+                <!-- Preview -->
+                <div
+                    class="section-card mt-4"
+                    id="previewSection"
+                    style="display: none;"
+                >
 
-                <div class="upload-area">
+                    <div class="section-header">
 
-                    <div class="upload-icon">
-                        ⇧
-                    </div>
+                        <div>
 
-                    <h6>
-                        Upload file CSV
-                    </h6>
+                            <h5>Preview Data</h5>
 
-                    <p>
-                        Drag & drop file CSV di sini atau pilih file dari komputer
-                    </p>
+                            <p>
+                                Periksa data mahasiswa sebelum melakukan import
+                            </p>
 
-                    <div class="custom-file-input mt-3">
+                        </div>
 
-                        <label for="csvFile" class="file-button">
-                            Choose File
-                        </label>
-
-                        <span id="fileName">
-                            No file chosen
+                        <span class="student-count" id="studentCount">
+                            0 Mahasiswa
                         </span>
 
-                        <input
-                            type="file"
-                            id="csvFile"
-                            accept=".csv"
+                    </div>
+
+
+                    <div class="table-responsive">
+
+                        <table class="table custom-table align-middle">
+
+                            <thead>
+
+                                <tr>
+                                    <th>No</th>
+                                    <th>NIM</th>
+                                    <th>Nama</th>
+                                    <th>Email</th>
+                                    <th>Kelas</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="previewTableBody">
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <!-- Submit / Import -->
+
+                    <div class="form-actions">
+
+                        <button
+                            type="button"
+                            id="cancelPreviewButton"
+                            class="btn btn-outline-primary custom-btn"
                         >
+                            Batal
+                        </button>
 
-                    </div>
-
-                    <small>
-                        Format yang didukung: .csv
-                    </small>
-
-                </div>
-
-
-                <!-- CSV Format -->
-
-                <div class="csv-format">
-
-                    <div>
-
-                        <strong>
-                            Format CSV
-                        </strong>
-
-                        <p>
-                            Pastikan file CSV memiliki kolom berikut:
-                        </p>
-
-                    </div>
-
-
-                    <code>
-                        NIM,Nama,Email,Kelas
-                    </code>
-
-
-                    <div class="csv-example">
-
-                        <code>
-                            0706022410098,Budi,budi@student.uc.ac.id,"Database A"
-                        </code>
-
-                        <code>
-                            0706022410099,Andi,andi@student.uc.ac.id,"Database B"
-                        </code>
+                        <button
+                            type="submit"
+                            id="importButton"
+                            class="btn btn-primary custom-btn"
+                            disabled
+                        >
+                            Import Mahasiswa
+                        </button>
 
                     </div>
 
                 </div>
 
-
-                <div class="form-actions">
-
-                    <button
-                        type="button"
-                        class="btn btn-outline-primary custom-btn"
-                    >
-                        Download Template CSV
-                    </button>
-
-                    <button
-                        type="button"
-                        class="btn btn-primary custom-btn"
-                    >
-                        Preview Data
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <!-- Preview -->
-            <div class="section-card mt-4">
-
-                <div class="section-header">
-
-                    <div>
-
-                        <h5>Preview Data</h5>
-
-                        <p>
-                            Periksa data mahasiswa sebelum melakukan import
-                        </p>
-
-                    </div>
-
-                    <span class="student-count">
-                        2 Mahasiswa
-                    </span>
-
-                </div>
-
-
-                <div class="table-responsive">
-
-                    <table class="table custom-table align-middle">
-
-                        <thead>
-
-                            <tr>
-                                <th>No</th>
-                                <th>NIM</th>
-                                <th>Nama</th>
-                                <th>Email</th>
-                                <th>Kelas</th>
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            <!-- Contoh data preview -->
-
-                            <tr>
-                                <td>1</td>
-                                <td>22101001</td>
-                                <td>Budi</td>
-                                <td>budi@student.uc.ac.id</td>
-                                <td>ISB-4</td>
-                            </tr>
-
-                            <tr>
-                                <td>2</td>
-                                <td>22101002</td>
-                                <td>Andi</td>
-                                <td>andi@student.uc.ac.id</td>
-                                <td>ISB-4</td>
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-
-                <!-- Submit / Import -->
-
-                <div class="form-actions">
-
-                    <button
-                        type="button"
-                        class="btn btn-outline-primary custom-btn"
-                    >
-                        Batal
-                    </button>
-
-                    <button
-                        type="button"
-                        class="btn btn-primary custom-btn"
-                    >
-                        Import Mahasiswa
-                    </button>
-
-                </div>
-
-            </div>
+            </form>
 
         </div>
 
@@ -310,19 +310,511 @@
 
 </div>
 <script>
+
     const csvFile = document.getElementById('csvFile');
     const fileName = document.getElementById('fileName');
+
+    const previewButton =
+        document.getElementById('previewButton');
+
+    const previewSection =
+        document.getElementById('previewSection');
+
+    const previewTableBody =
+        document.getElementById('previewTableBody');
+
+    const studentCount =
+        document.getElementById('studentCount');
+
+    const cancelPreviewButton =
+        document.getElementById('cancelPreviewButton');
+
+    const importButton =
+        document.getElementById('importButton');
+
+    /*
+    |--------------------------------------------------------------------------
+    | FILE INPUT
+    |--------------------------------------------------------------------------
+    */
 
     csvFile.addEventListener('change', function () {
 
         if (this.files.length > 0) {
-            fileName.textContent = this.files[0].name;
-            fileName.style.color = 'var(--text)';
+
+            fileName.textContent =
+                this.files[0].name;
+
+            fileName.style.color =
+                'var(--text)';
+
+            // Sembunyikan preview ketika file diganti
+            previewSection.style.display =
+                'none';
+
+            previewTableBody.innerHTML =
+                '';
+
         } else {
-            fileName.textContent = 'No file chosen';
-            fileName.style.color = 'var(--muted)';
+
+            fileName.textContent =
+                'No file chosen';
+
+            fileName.style.color =
+                'var(--muted)';
+
+            previewSection.style.display =
+                'none';
         }
 
     });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PREVIEW BUTTON
+    |--------------------------------------------------------------------------
+    */
+
+    previewButton.addEventListener('click', function () {
+
+        /*
+        |--------------------------------------------------------------------------
+        | CHECK FILE
+        |--------------------------------------------------------------------------
+        */
+
+        if (!csvFile.files.length) {
+
+            previewSection.style.display =
+                'none';
+
+            alert(
+                'Silakan pilih file CSV terlebih dahulu.'
+            );
+
+            return;
+        }
+
+
+        const file =
+            csvFile.files[0];
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CHECK FILE TYPE
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            !file.name
+                .toLowerCase()
+                .endsWith('.csv')
+        ) {
+
+            previewSection.style.display =
+                'none';
+
+            alert(
+                'File harus berformat CSV.'
+            );
+
+            return;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | READ CSV
+        |--------------------------------------------------------------------------
+        */
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload = function (event) {
+
+            const text =
+                event.target.result;
+
+
+            const rows =
+                parseCSV(text);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | CHECK CSV
+            |--------------------------------------------------------------------------
+            */
+
+            if (rows.length <= 1) {
+
+                previewSection.style.display =
+                    'none';
+
+                alert(
+                    'File CSV tidak memiliki data mahasiswa.'
+                );
+
+                return;
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | CLEAR PREVIOUS DATA
+            |--------------------------------------------------------------------------
+            */
+
+            previewTableBody.innerHTML =
+                '';
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | REMOVE HEADER
+            |--------------------------------------------------------------------------
+            */
+
+            const dataRows =
+                rows.slice(1);
+
+
+            let validRows =
+                0;
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | CREATE TABLE ROW
+            |--------------------------------------------------------------------------
+            */
+
+            dataRows.forEach(function (row) {
+
+                // Lewati baris kosong
+                if (
+                    row.length === 1 &&
+                    row[0].trim() === ''
+                ) {
+                    return;
+                }
+
+
+                const tr =
+                    document.createElement('tr');
+
+
+                /*
+                | No
+                */
+
+                const no =
+                    document.createElement('td');
+
+                no.textContent =
+                    validRows + 1;
+
+
+                /*
+                | NIM
+                */
+
+                const nim =
+                    document.createElement('td');
+
+                nim.textContent =
+                    row[0]?.trim() || '-';
+
+
+                /*
+                | Nama
+                */
+
+                const nama =
+                    document.createElement('td');
+
+                nama.textContent =
+                    row[1]?.trim() || '-';
+
+
+                /*
+                | Email
+                */
+
+                const email =
+                    document.createElement('td');
+
+                email.textContent =
+                    row[2]?.trim() || '-';
+
+
+                /*
+                | Kelas
+                */
+
+                const kelas =
+                    document.createElement('td');
+
+                kelas.textContent =
+                    row[3]?.trim() || '-';
+
+
+                /*
+                | Add cells
+                */
+
+                tr.appendChild(no);
+
+                tr.appendChild(nim);
+
+                tr.appendChild(nama);
+
+                tr.appendChild(email);
+
+                tr.appendChild(kelas);
+
+
+                /*
+                | Add row
+                */
+
+                previewTableBody.appendChild(tr);
+
+
+                validRows++;
+
+            });
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE STUDENT COUNT
+            |--------------------------------------------------------------------------
+            */
+
+            studentCount.textContent =
+                validRows + ' Mahasiswa';
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SHOW PREVIEW
+            |--------------------------------------------------------------------------
+            */
+
+            if (validRows > 0) {
+
+                previewSection.style.display = 'block';
+
+                importButton.disabled = false;
+
+            } else {
+
+                previewSection.style.display =
+                    'none';
+
+                alert(
+                    'Tidak ditemukan data mahasiswa.'
+                );
+
+            }
+
+        };
+
+
+        reader.onerror = function () {
+
+            previewSection.style.display =
+                'none';
+
+            alert(
+                'Gagal membaca file CSV.'
+            );
+
+        };
+
+
+        reader.readAsText(file);
+
+    });
+
+    cancelPreviewButton.addEventListener('click', function () {
+
+        // Sembunyikan preview
+        previewSection.style.display = 'none';
+
+        // Kosongkan tabel
+        previewTableBody.innerHTML = '';
+
+        // Reset jumlah mahasiswa
+        studentCount.textContent = '0 Mahasiswa';
+
+        // Hapus file yang dipilih
+        csvFile.value = '';
+
+        // Reset nama file
+        fileName.textContent = 'No file chosen';
+
+        fileName.style.color = 'var(--muted)';
+
+        importButton.disabled = true;
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CSV PARSER
+    |--------------------------------------------------------------------------
+    |
+    | Mendukung:
+    |
+    | nim,nama,email,kelas
+    |
+    | 070...,Budi,budi@email.com,"Database A"
+    |
+    |--------------------------------------------------------------------------
+    */
+
+    function parseCSV(text) {
+
+        const rows = [];
+
+        let row = [];
+
+        let value = '';
+
+        let insideQuotes = false;
+
+
+        for (
+            let i = 0;
+            i < text.length;
+            i++
+        ) {
+
+            const char =
+                text[i];
+
+            const nextChar =
+                text[i + 1];
+
+
+            /*
+            | Double quote di dalam quote
+            */
+
+            if (
+                char === '"' &&
+                insideQuotes &&
+                nextChar === '"'
+            ) {
+
+                value += '"';
+
+                i++;
+
+            }
+
+
+            /*
+            | Mulai / selesai quote
+            */
+
+            else if (
+                char === '"'
+            ) {
+
+                insideQuotes =
+                    !insideQuotes;
+
+            }
+
+
+            /*
+            | Comma
+            */
+
+            else if (
+                char === ',' &&
+                !insideQuotes
+            ) {
+
+                row.push(value);
+
+                value = '';
+
+            }
+
+
+            /*
+            | New line
+            */
+
+            else if (
+                (char === '\n' ||
+                 char === '\r') &&
+                !insideQuotes
+            ) {
+
+                // Windows CRLF
+                if (
+                    char === '\r' &&
+                    nextChar === '\n'
+                ) {
+
+                    i++;
+
+                }
+
+
+                row.push(value);
+
+                rows.push(row);
+
+                row = [];
+
+                value = '';
+
+            }
+
+
+            /*
+            | Character biasa
+            */
+
+            else {
+
+                value += char;
+
+            }
+
+        }
+
+
+        /*
+        | Tambahkan row terakhir
+        */
+
+        if (
+            value !== '' ||
+            row.length > 0
+        ) {
+
+            row.push(value);
+
+            rows.push(row);
+
+        }
+
+
+        return rows;
+
+    }
+
 </script>
 @endsection
