@@ -65,3 +65,22 @@ Route::delete('/students/{student}', [StudentController::class, 'destroy'])
 
 Route::put('/students/{student}/password', [StudentController::class, 'updatePassword'])
     ->name('students.updatePassword');
+
+
+// =========================
+// Database Management
+// =========================
+
+use App\Http\Controllers\DatabaseController;
+
+Route::get('/databases', [DatabaseController::class, 'index'])
+    ->name('databases.index');
+
+Route::get('/databases/{student}', [DatabaseController::class, 'show'])
+    ->name('databases.show');
+
+Route::post('/databases/{id}/grant', [DatabaseController::class, 'grantAccess'])
+    ->name('databases.grant');
+
+Route::post('/databases/{id}/revoke', [DatabaseController::class, 'revokeAccess'])
+    ->name('databases.revoke');

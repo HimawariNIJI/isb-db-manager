@@ -4,8 +4,6 @@
 
 @section('content')
 
-<div class="dashboard-wrapper">
-
     <!-- Sidebar -->
     <aside class="sidebar">
 
@@ -24,12 +22,12 @@
 
         <nav class="sidebar-nav">
 
-            <a href="{{ route('dashboard') }}" class="nav-item">
+            <a href="{{ route('dashboard') }}" class="nav-item active">
                 <span>▦</span>
                 Dashboard
             </a>
 
-            <a href="{{ route('students.create') }}" class="nav-item active">
+            <a href="{{ route('students.create') }}" class="nav-item">
                 <span>＋</span>
                 Tambah Mahasiswa
             </a>
@@ -44,22 +42,21 @@
                 Daftar Mahasiswa
             </a>
 
+            <a href="{{ route('databases.index') }}" class="nav-item">
+                <span>🗄</span>
+                Manage Database
+            </a>
+
         </nav>
 
         <div class="sidebar-bottom">
-
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
-
-                <button
-                    type="submit"
-                    class="nav-item logout border-0 bg-transparent w-100 text-start"
-                >
+                <button type="submit" class="nav-item logout border-0 bg-transparent w-100 text-start">
                     <span>↪</span>
                     Logout
                 </button>
             </form>
-
         </div>
 
     </aside>
@@ -110,12 +107,12 @@
 
                 </div>
 
-                @if(session('error'))
+                @if (session('error'))
                     <div class="alert alert-danger login-error">
                         {{ session('error') }}
                     </div>
                 @endif
-                @if($errors->any())
+                @if ($errors->any())
                     <div class="alert alert-danger login-error">
                         {{ $errors->first() }}
                     </div>
@@ -131,14 +128,8 @@
                                 NIM
                             </label>
 
-                            <input
-                                type="text"
-                                name="nim"
-                                class="form-control custom-input"
-                                placeholder="Contoh: 0706022410099"
-                                value="{{ old('nim') }}"
-                                required
-                            >
+                            <input type="text" name="nim" class="form-control custom-input"
+                                placeholder="Contoh: 0706022410099" value="{{ old('nim') }}" required>
 
                         </div>
 
@@ -149,14 +140,8 @@
                                 Nama Mahasiswa
                             </label>
 
-                            <input
-                                type="text"
-                                name="nama"
-                                class="form-control custom-input"
-                                placeholder="Masukkan nama lengkap"
-                                value="{{ old('nama') }}"
-                                required
-                            >
+                            <input type="text" name="nama" class="form-control custom-input"
+                                placeholder="Masukkan nama lengkap" value="{{ old('nama') }}" required>
 
                         </div>
 
@@ -167,13 +152,8 @@
                                 Email
                             </label>
 
-                            <input
-                                type="email"
-                                name="email"
-                                class="form-control custom-input"
-                                placeholder="nama@student.uc.ac.id"
-                                value="{{ old('email') }}"
-                            >
+                            <input type="email" name="email" class="form-control custom-input"
+                                placeholder="nama@student.uc.ac.id" value="{{ old('email') }}">
 
                         </div>
 
@@ -184,13 +164,8 @@
                                 Kelas
                             </label>
 
-                            <input
-                                type="text"
-                                name="kelas"
-                                class="form-control custom-input"
-                                placeholder="Masukkan kelas"
-                                value="{{ old('kelas') }}"
-                            >
+                            <input type="text" name="kelas" class="form-control custom-input"
+                                placeholder="Masukkan kelas" value="{{ old('kelas') }}">
 
                         </div>
 
@@ -223,10 +198,7 @@
 
                     <div class="form-actions">
 
-                        <button
-                            type="submit"
-                            class="btn btn-primary custom-btn"
-                        >
+                        <button type="submit" class="btn btn-primary custom-btn">
                             Tambahkan Mahasiswa
                         </button>
 
@@ -240,6 +212,6 @@
 
     </main>
 
-</div>
+    </div>
 
 @endsection

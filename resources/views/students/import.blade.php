@@ -4,559 +4,487 @@
 
 @section('content')
 
-<div class="dashboard-wrapper">
+    <div class="dashboard-wrapper">
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
+        <!-- Sidebar -->
+        <aside class="sidebar">
 
-        <div class="sidebar-brand">
+            <div class="sidebar-brand">
 
-            <div class="brand-logo small">
-                ISB
-            </div>
-
-            <div>
-                <h5>ISB DB Manager</h5>
-                <span>Database Management</span>
-            </div>
-
-        </div>
-
-
-        <nav class="sidebar-nav">
-
-            <a href="{{ route('dashboard') }}" class="nav-item">
-                <span>▦</span>
-                Dashboard
-            </a>
-
-            <a href="{{ route('students.create') }}" class="nav-item">
-                <span>＋</span>
-                Tambah Mahasiswa
-            </a>
-
-            <a href="{{ route('students.import') }}" class="nav-item active">
-                <span>⇧</span>
-                Import CSV
-            </a>
-
-            <a href="{{ route('students.index') }}" class="nav-item">
-                <span>☷</span>
-                Daftar Mahasiswa
-            </a>
-
-        </nav>
-
-
-        <div class="sidebar-bottom">
-
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-
-                <button
-                    type="submit"
-                    class="nav-item logout border-0 bg-transparent w-100 text-start"
-                >
-                    <span>↪</span>
-                    Logout
-                </button>
-            </form>
-
-        </div>
-
-    </aside>
-
-
-    <!-- Main Content -->
-    <main class="main-content">
-
-        <header class="top-header">
-
-            <div>
-
-                <h4>Import CSV</h4>
-
-                <p>
-                    Tambahkan banyak mahasiswa sekaligus
-                </p>
-
-            </div>
-
-
-            <div class="admin-profile">
-
-                <div class="admin-avatar">
-                    A
+                <div class="brand-logo small">
+                    ISB
                 </div>
 
                 <div>
-                    <strong>Administrator</strong>
-                    <small>Dosen</small>
+                    <h5>ISB DB Manager</h5>
+                    <span>Database Management</span>
                 </div>
 
             </div>
 
-        </header>
+            <nav class="sidebar-nav">
+
+                <a href="{{ route('dashboard') }}" class="nav-item active">
+                    <span>▦</span>
+                    Dashboard
+                </a>
+
+                <a href="{{ route('students.create') }}" class="nav-item">
+                    <span>＋</span>
+                    Tambah Mahasiswa
+                </a>
+
+                <a href="{{ route('students.import') }}" class="nav-item">
+                    <span>⇧</span>
+                    Import CSV
+                </a>
+
+                <a href="{{ route('students.index') }}" class="nav-item">
+                    <span>☷</span>
+                    Daftar Mahasiswa
+                </a>
+
+                <a href="{{ route('databases.index') }}" class="nav-item">
+                    <span>🗄</span>
+                    Manage Database
+                </a>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="nav-item logout border-0 bg-transparent w-100 text-start">
+                        <span>↪</span>
+                        Logout
+                    </button>
+                </form>
+            </div>
+
+        </aside>
 
 
-        <div class="content-container">
+        <!-- Main Content -->
+        <main class="main-content">
 
-            <form
-                action="{{ route('students.import.store') }}"
-                method="POST"
-                enctype="multipart/form-data"
-                id="importForm"
-            >
-                @csrf
+            <header class="top-header">
 
-                <div class="section-card">
+                <div>
 
-                    <div class="section-header">
+                    <h4>Import CSV</h4>
 
-                        <div>
+                    <p>
+                        Tambahkan banyak mahasiswa sekaligus
+                    </p>
 
-                            <h5>Import Data Mahasiswa</h5>
+                </div>
+
+
+                <div class="admin-profile">
+
+                    <div class="admin-avatar">
+                        A
+                    </div>
+
+                    <div>
+                        <strong>Administrator</strong>
+                        <small>Dosen</small>
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <div class="content-container">
+
+                <form action="{{ route('students.import.store') }}" method="POST" enctype="multipart/form-data"
+                    id="importForm">
+                    @csrf
+
+                    <div class="section-card">
+
+                        <div class="section-header">
+
+                            <div>
+
+                                <h5>Import Data Mahasiswa</h5>
+
+                                <p>
+                                    Upload file CSV yang berisi data mahasiswa
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Upload Area -->
+
+                        <div class="upload-area" id="uploadArea">
+
+                            <div class="upload-icon">
+                                ⇧
+                            </div>
+
+                            <h6>
+                                Upload file CSV
+                            </h6>
 
                             <p>
-                                Upload file CSV yang berisi data mahasiswa
+                                Drag & drop file CSV di sini atau pilih file dari komputer
                             </p>
+
+                            <div class="custom-file-input mt-3">
+
+                                <label for="csvFile" class="file-button">
+                                    Choose File
+                                </label>
+
+                                <span id="fileName">
+                                    No file chosen
+                                </span>
+
+                                <input type="file" id="csvFile" name="csv_file" accept=".csv">
+
+                            </div>
+
+                            <small>
+                                Format yang didukung: .csv
+                            </small>
+
+                        </div>
+
+
+                        <!-- CSV Format -->
+
+                        <div class="csv-format">
+
+                            <div>
+
+                                <strong>
+                                    Format CSV
+                                </strong>
+
+                                <p>
+                                    Pastikan file CSV memiliki kolom berikut:
+                                </p>
+
+                            </div>
+
+
+                            <code>
+                                nim,nama,email,kelas
+                            </code>
+
+
+                            <div class="csv-example">
+
+                                <code>
+                                    0706022410098,Budi,budi@student.uc.ac.id,"Database A"
+                                </code>
+
+                                <code>
+                                    0706022410099,Andi,andi@student.uc.ac.id,"Database B"
+                                </code>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-actions">
+
+                            <a href="{{ route('students.template') }}" class="btn btn-outline-primary custom-btn">
+                                Download Template CSV
+                            </a>
+
+                            <button type="button" id="previewButton" class="btn btn-primary custom-btn">
+                                Preview Data
+                            </button>
 
                         </div>
 
                     </div>
 
-                    <!-- Upload Area -->
 
-                    <div class="upload-area" id="uploadArea">
+                    <!-- Preview -->
+                    <div class="section-card mt-4" id="previewSection" style="display: none;">
 
-                        <div class="upload-icon">
-                            ⇧
-                        </div>
+                        <div class="section-header">
 
-                        <h6>
-                            Upload file CSV
-                        </h6>
+                            <div>
 
-                        <p>
-                            Drag & drop file CSV di sini atau pilih file dari komputer
-                        </p>
+                                <h5>Preview Data</h5>
 
-                        <div class="custom-file-input mt-3">
+                                <p>
+                                    Periksa data mahasiswa sebelum melakukan import
+                                </p>
 
-                            <label for="csvFile" class="file-button">
-                                Choose File
-                            </label>
+                            </div>
 
-                            <span id="fileName">
-                                No file chosen
+                            <span class="student-count" id="studentCount">
+                                0 Mahasiswa
                             </span>
 
-                            <input
-                                type="file"
-                                id="csvFile"
-                                name="csv_file"
-                                accept=".csv"
-                            >
-
                         </div>
 
-                        <small>
-                            Format yang didukung: .csv
-                        </small>
 
-                    </div>
+                        <div class="table-responsive">
 
+                            <table class="table custom-table align-middle">
 
-                    <!-- CSV Format -->
+                                <thead>
 
-                    <div class="csv-format">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>NIM</th>
+                                        <th>Nama</th>
+                                        <th>Email</th>
+                                        <th>Kelas</th>
+                                    </tr>
 
-                        <div>
+                                </thead>
 
-                            <strong>
-                                Format CSV
-                            </strong>
+                                <tbody id="previewTableBody">
 
-                            <p>
-                                Pastikan file CSV memiliki kolom berikut:
-                            </p>
+                                </tbody>
+
+                            </table>
 
                         </div>
 
 
-                        <code>
-                            nim,nama,email,kelas
-                        </code>
+                        <!-- Submit / Import -->
 
+                        <div class="form-actions">
 
-                        <div class="csv-example">
+                            <button type="button" id="cancelPreviewButton" class="btn btn-outline-primary custom-btn">
+                                Batal
+                            </button>
 
-                            <code>
-                                0706022410098,Budi,budi@student.uc.ac.id,"Database A"
-                            </code>
-
-                            <code>
-                                0706022410099,Andi,andi@student.uc.ac.id,"Database B"
-                            </code>
+                            <button type="submit" id="importButton" class="btn btn-primary custom-btn" disabled>
+                                Import Mahasiswa
+                            </button>
 
                         </div>
 
                     </div>
 
+                </form>
 
-                    <div class="form-actions">
+            </div>
 
-                        <a
-                            href="{{ route('students.template') }}"
-                            class="btn btn-outline-primary custom-btn"
-                        >
-                            Download Template CSV
-                        </a>
+        </main>
 
-                        <button
-                            type="button"
-                            id="previewButton"
-                            class="btn btn-primary custom-btn"
-                        >
-                            Preview Data
-                        </button>
+    </div>
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const csvFile = document.getElementById('csvFile');
+        const fileName = document.getElementById('fileName');
 
-                    </div>
+        const previewButton =
+            document.getElementById('previewButton');
 
-                </div>
+        const previewSection =
+            document.getElementById('previewSection');
 
+        const previewTableBody =
+            document.getElementById('previewTableBody');
 
-                <!-- Preview -->
-                <div
-                    class="section-card mt-4"
-                    id="previewSection"
-                    style="display: none;"
-                >
+        const studentCount =
+            document.getElementById('studentCount');
 
-                    <div class="section-header">
+        const cancelPreviewButton =
+            document.getElementById('cancelPreviewButton');
 
-                        <div>
+        const importButton =
+            document.getElementById('importButton');
 
-                            <h5>Preview Data</h5>
+        /*
+        |--------------------------------------------------------------------------
+        | FILE INPUT
+        |--------------------------------------------------------------------------
+        */
 
-                            <p>
-                                Periksa data mahasiswa sebelum melakukan import
-                            </p>
+        csvFile.addEventListener('change', function() {
 
-                        </div>
+            if (this.files.length > 0) {
 
-                        <span class="student-count" id="studentCount">
-                            0 Mahasiswa
-                        </span>
+                fileName.textContent =
+                    this.files[0].name;
 
-                    </div>
+                fileName.style.color =
+                    'var(--text)';
 
+                // Sembunyikan preview ketika file diganti
+                previewSection.style.display =
+                    'none';
 
-                    <div class="table-responsive">
+                previewTableBody.innerHTML =
+                    '';
 
-                        <table class="table custom-table align-middle">
-
-                            <thead>
-
-                                <tr>
-                                    <th>No</th>
-                                    <th>NIM</th>
-                                    <th>Nama</th>
-                                    <th>Email</th>
-                                    <th>Kelas</th>
-                                </tr>
-
-                            </thead>
-
-                            <tbody id="previewTableBody">
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-
-                    <!-- Submit / Import -->
-
-                    <div class="form-actions">
-
-                        <button
-                            type="button"
-                            id="cancelPreviewButton"
-                            class="btn btn-outline-primary custom-btn"
-                        >
-                            Batal
-                        </button>
-
-                        <button
-                            type="submit"
-                            id="importButton"
-                            class="btn btn-primary custom-btn"
-                            disabled
-                        >
-                            Import Mahasiswa
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </form>
-
-        </div>
-
-    </main>
-
-</div>
-<script>
-
-    const uploadArea = document.getElementById('uploadArea');
-    const csvFile = document.getElementById('csvFile');
-    const fileName = document.getElementById('fileName');
-
-    const previewButton =
-        document.getElementById('previewButton');
-
-    const previewSection =
-        document.getElementById('previewSection');
-
-    const previewTableBody =
-        document.getElementById('previewTableBody');
-
-    const studentCount =
-        document.getElementById('studentCount');
-
-    const cancelPreviewButton =
-        document.getElementById('cancelPreviewButton');
-
-    const importButton =
-        document.getElementById('importButton');
-
-    /*
-    |--------------------------------------------------------------------------
-    | FILE INPUT
-    |--------------------------------------------------------------------------
-    */
-
-    csvFile.addEventListener('change', function () {
-
-        if (this.files.length > 0) {
-
-            fileName.textContent =
-                this.files[0].name;
-
-            fileName.style.color =
-                'var(--text)';
-
-            // Sembunyikan preview ketika file diganti
-            previewSection.style.display =
-                'none';
-
-            previewTableBody.innerHTML =
-                '';
-
-            handleFile(this.files[0]);
-
-        } else {
-
-            fileName.textContent =
-                'No file chosen';
-
-            fileName.style.color =
-                'var(--muted)';
-
-            previewSection.style.display =
-                'none';
-
-            resetFile();
-
-        }
-
-    });
-
-    // =========================
-    // Handle File
-    // =========================
-
-    function handleFile(file) {
-
-        fileName.textContent = file.name;
-
-        fileName.style.color = 'var(--text)';
-
-    }
-
-
-    // =========================
-    // Reset File
-    // =========================
-
-    function resetFile() {
-
-        fileName.textContent = 'No file chosen';
-
-        fileName.style.color = 'var(--muted)';
-
-        csvFile.value = '';
-
-    }
-
-    // =========================
-    // Drag Over
-    // =========================
-
-    uploadArea.addEventListener('dragover', function (e) {
-
-        e.preventDefault();
-
-        uploadArea.classList.add('drag-over');
-
-    });
-
-
-    // =========================
-    // Drag Leave
-    // =========================
-
-    uploadArea.addEventListener('dragleave', function (e) {
-
-        e.preventDefault();
-
-        uploadArea.classList.remove('drag-over');
-
-    });
-
-
-    // =========================
-    // Drop
-    // =========================
-
-    uploadArea.addEventListener('drop', function (e) {
-
-        e.preventDefault();
-
-        uploadArea.classList.remove('drag-over');
-
-        const files = e.dataTransfer.files;
-
-        if (files.length > 0) {
-
-            const file = files[0];
-
-            // Pastikan CSV
-            if (
-                file.type === 'text/csv' ||
-                file.name.toLowerCase().endsWith('.csv')
-            ) {
-
-                // Masukkan file ke input
-                const dataTransfer = new DataTransfer();
-
-                dataTransfer.items.add(file);
-
-                csvFile.files = dataTransfer.files;
-
-                // Update nama file
-                handleFile(file);
+                handleFile(this.files[0]);
 
             } else {
 
-                alert('Silakan pilih file CSV.');
+                fileName.textContent =
+                    'No file chosen';
+
+                fileName.style.color =
+                    'var(--muted)';
+
+                previewSection.style.display =
+                    'none';
+
+                resetFile();
 
             }
 
-        }
+        });
 
-    });
+        // =========================
+        // Handle File
+        // =========================
 
-    /*
-    |--------------------------------------------------------------------------
-    | PREVIEW BUTTON
-    |--------------------------------------------------------------------------
-    */
+        function handleFile(file) {
 
-    previewButton.addEventListener('click', function () {
+            fileName.textContent = file.name;
 
-        /*
-        |--------------------------------------------------------------------------
-        | CHECK FILE
-        |--------------------------------------------------------------------------
-        */
+            fileName.style.color = 'var(--text)';
 
-        if (!csvFile.files.length) {
-
-            previewSection.style.display =
-                'none';
-
-            alert(
-                'Silakan pilih file CSV terlebih dahulu.'
-            );
-
-            return;
         }
 
 
-        const file =
-            csvFile.files[0];
+        // =========================
+        // Reset File
+        // =========================
 
+        function resetFile() {
 
-        /*
-        |--------------------------------------------------------------------------
-        | CHECK FILE TYPE
-        |--------------------------------------------------------------------------
-        */
+            fileName.textContent = 'No file chosen';
 
-        if (
-            !file.name
-                .toLowerCase()
-                .endsWith('.csv')
-        ) {
+            fileName.style.color = 'var(--muted)';
 
-            previewSection.style.display =
-                'none';
+            csvFile.value = '';
 
-            alert(
-                'File harus berformat CSV.'
-            );
-
-            return;
         }
 
+        // =========================
+        // Drag Over
+        // =========================
+
+        uploadArea.addEventListener('dragover', function(e) {
+
+            e.preventDefault();
+
+            uploadArea.classList.add('drag-over');
+
+        });
+
+
+        // =========================
+        // Drag Leave
+        // =========================
+
+        uploadArea.addEventListener('dragleave', function(e) {
+
+            e.preventDefault();
+
+            uploadArea.classList.remove('drag-over');
+
+        });
+
+
+        // =========================
+        // Drop
+        // =========================
+
+        uploadArea.addEventListener('drop', function(e) {
+
+            e.preventDefault();
+
+            uploadArea.classList.remove('drag-over');
+
+            const files = e.dataTransfer.files;
+
+            if (files.length > 0) {
+
+                const file = files[0];
+
+                // Pastikan CSV
+                if (
+                    file.type === 'text/csv' ||
+                    file.name.toLowerCase().endsWith('.csv')
+                ) {
+
+                    // Masukkan file ke input
+                    const dataTransfer = new DataTransfer();
+
+                    dataTransfer.items.add(file);
+
+                    csvFile.files = dataTransfer.files;
+
+                    // Update nama file
+                    handleFile(file);
+
+                } else {
+
+                    alert('Silakan pilih file CSV.');
+
+                }
+
+            }
+
+        });
 
         /*
         |--------------------------------------------------------------------------
-        | READ CSV
+        | PREVIEW BUTTON
         |--------------------------------------------------------------------------
         */
 
-        const reader =
-            new FileReader();
-
-
-        reader.onload = function (event) {
-
-            const text =
-                event.target.result;
-
-
-            const rows =
-                parseCSV(text);
-
+        previewButton.addEventListener('click', function() {
 
             /*
             |--------------------------------------------------------------------------
-            | CHECK CSV
+            | CHECK FILE
             |--------------------------------------------------------------------------
             */
 
-            if (rows.length <= 1) {
+            if (!csvFile.files.length) {
 
                 previewSection.style.display =
                     'none';
 
                 alert(
-                    'File CSV tidak memiliki data mahasiswa.'
+                    'Silakan pilih file CSV terlebih dahulu.'
+                );
+
+                return;
+            }
+
+
+            const file =
+                csvFile.files[0];
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | CHECK FILE TYPE
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                !file.name
+                .toLowerCase()
+                .endsWith('.csv')
+            ) {
+
+                previewSection.style.display =
+                    'none';
+
+                alert(
+                    'File harus berformat CSV.'
                 );
 
                 return;
@@ -565,356 +493,387 @@
 
             /*
             |--------------------------------------------------------------------------
-            | CLEAR PREVIOUS DATA
+            | READ CSV
             |--------------------------------------------------------------------------
             */
 
-            previewTableBody.innerHTML =
-                '';
+            const reader =
+                new FileReader();
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | REMOVE HEADER
-            |--------------------------------------------------------------------------
-            */
+            reader.onload = function(event) {
 
-            const dataRows =
-                rows.slice(1);
+                const text =
+                    event.target.result;
 
 
-            let validRows =
-                0;
+                const rows =
+                    parseCSV(text);
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | CREATE TABLE ROW
-            |--------------------------------------------------------------------------
-            */
+                /*
+                |--------------------------------------------------------------------------
+                | CHECK CSV
+                |--------------------------------------------------------------------------
+                */
 
-            dataRows.forEach(function (row) {
+                if (rows.length <= 1) {
 
-                // Lewati baris kosong
-                if (
-                    row.length === 1 &&
-                    row[0].trim() === ''
-                ) {
+                    previewSection.style.display =
+                        'none';
+
+                    alert(
+                        'File CSV tidak memiliki data mahasiswa.'
+                    );
+
                     return;
                 }
 
 
-                const tr =
-                    document.createElement('tr');
+                /*
+                |--------------------------------------------------------------------------
+                | CLEAR PREVIOUS DATA
+                |--------------------------------------------------------------------------
+                */
+
+                previewTableBody.innerHTML =
+                    '';
 
 
                 /*
-                | No
+                |--------------------------------------------------------------------------
+                | REMOVE HEADER
+                |--------------------------------------------------------------------------
                 */
 
-                const no =
-                    document.createElement('td');
+                const dataRows =
+                    rows.slice(1);
 
-                no.textContent =
-                    validRows + 1;
+
+                let validRows =
+                    0;
 
 
                 /*
-                | NIM
+                |--------------------------------------------------------------------------
+                | CREATE TABLE ROW
+                |--------------------------------------------------------------------------
                 */
 
-                const nim =
-                    document.createElement('td');
+                dataRows.forEach(function(row) {
 
-                nim.textContent =
-                    row[0]?.trim() || '-';
+                    // Lewati baris kosong
+                    if (
+                        row.length === 1 &&
+                        row[0].trim() === ''
+                    ) {
+                        return;
+                    }
+
+
+                    const tr =
+                        document.createElement('tr');
+
+
+                    /*
+                    | No
+                    */
+
+                    const no =
+                        document.createElement('td');
+
+                    no.textContent =
+                        validRows + 1;
+
+
+                    /*
+                    | NIM
+                    */
+
+                    const nim =
+                        document.createElement('td');
+
+                    nim.textContent =
+                        row[0]?.trim() || '-';
+
+
+                    /*
+                    | Nama
+                    */
+
+                    const nama =
+                        document.createElement('td');
+
+                    nama.textContent =
+                        row[1]?.trim() || '-';
+
+
+                    /*
+                    | Email
+                    */
+
+                    const email =
+                        document.createElement('td');
+
+                    email.textContent =
+                        row[2]?.trim() || '-';
+
+
+                    /*
+                    | Kelas
+                    */
+
+                    const kelas =
+                        document.createElement('td');
+
+                    kelas.textContent =
+                        row[3]?.trim() || '-';
+
+
+                    /*
+                    | Add cells
+                    */
+
+                    tr.appendChild(no);
+
+                    tr.appendChild(nim);
+
+                    tr.appendChild(nama);
+
+                    tr.appendChild(email);
+
+                    tr.appendChild(kelas);
+
+
+                    /*
+                    | Add row
+                    */
+
+                    previewTableBody.appendChild(tr);
+
+
+                    validRows++;
+
+                });
 
 
                 /*
-                | Nama
+                |--------------------------------------------------------------------------
+                | UPDATE STUDENT COUNT
+                |--------------------------------------------------------------------------
                 */
 
-                const nama =
-                    document.createElement('td');
-
-                nama.textContent =
-                    row[1]?.trim() || '-';
+                studentCount.textContent =
+                    validRows + ' Mahasiswa';
 
 
                 /*
-                | Email
+                |--------------------------------------------------------------------------
+                | SHOW PREVIEW
+                |--------------------------------------------------------------------------
                 */
 
-                const email =
-                    document.createElement('td');
+                if (validRows > 0) {
 
-                email.textContent =
-                    row[2]?.trim() || '-';
+                    previewSection.style.display = 'block';
 
+                    importButton.disabled = false;
 
-                /*
-                | Kelas
-                */
+                } else {
 
-                const kelas =
-                    document.createElement('td');
+                    previewSection.style.display =
+                        'none';
 
-                kelas.textContent =
-                    row[3]?.trim() || '-';
+                    alert(
+                        'Tidak ditemukan data mahasiswa.'
+                    );
 
+                }
 
-                /*
-                | Add cells
-                */
-
-                tr.appendChild(no);
-
-                tr.appendChild(nim);
-
-                tr.appendChild(nama);
-
-                tr.appendChild(email);
-
-                tr.appendChild(kelas);
+            };
 
 
-                /*
-                | Add row
-                */
-
-                previewTableBody.appendChild(tr);
-
-
-                validRows++;
-
-            });
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | UPDATE STUDENT COUNT
-            |--------------------------------------------------------------------------
-            */
-
-            studentCount.textContent =
-                validRows + ' Mahasiswa';
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | SHOW PREVIEW
-            |--------------------------------------------------------------------------
-            */
-
-            if (validRows > 0) {
-
-                previewSection.style.display = 'block';
-
-                importButton.disabled = false;
-
-            } else {
+            reader.onerror = function() {
 
                 previewSection.style.display =
                     'none';
 
                 alert(
-                    'Tidak ditemukan data mahasiswa.'
+                    'Gagal membaca file CSV.'
                 );
 
-            }
-
-        };
+            };
 
 
-        reader.onerror = function () {
+            reader.readAsText(file);
 
-            previewSection.style.display =
-                'none';
+        });
 
-            alert(
-                'Gagal membaca file CSV.'
-            );
+        cancelPreviewButton.addEventListener('click', function() {
 
-        };
+            // Sembunyikan preview
+            previewSection.style.display = 'none';
 
+            // Kosongkan tabel
+            previewTableBody.innerHTML = '';
 
-        reader.readAsText(file);
+            // Reset jumlah mahasiswa
+            studentCount.textContent = '0 Mahasiswa';
 
-    });
+            // Hapus file yang dipilih
+            csvFile.value = '';
 
-    cancelPreviewButton.addEventListener('click', function () {
+            // Reset nama file
+            fileName.textContent = 'No file chosen';
 
-        // Sembunyikan preview
-        previewSection.style.display = 'none';
+            fileName.style.color = 'var(--muted)';
 
-        // Kosongkan tabel
-        previewTableBody.innerHTML = '';
+            importButton.disabled = true;
 
-        // Reset jumlah mahasiswa
-        studentCount.textContent = '0 Mahasiswa';
-
-        // Hapus file yang dipilih
-        csvFile.value = '';
-
-        // Reset nama file
-        fileName.textContent = 'No file chosen';
-
-        fileName.style.color = 'var(--muted)';
-
-        importButton.disabled = true;
-
-    });
+        });
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | CSV PARSER
-    |--------------------------------------------------------------------------
-    |
-    | Mendukung:
-    |
-    | nim,nama,email,kelas
-    |
-    | 070...,Budi,budi@email.com,"Database A"
-    |
-    |--------------------------------------------------------------------------
-    */
+        /*
+        |--------------------------------------------------------------------------
+        | CSV PARSER
+        |--------------------------------------------------------------------------
+        |
+        | Mendukung:
+        |
+        | nim,nama,email,kelas
+        |
+        | 070...,Budi,budi@email.com,"Database A"
+        |
+        |--------------------------------------------------------------------------
+        */
 
-    function parseCSV(text) {
+        function parseCSV(text) {
 
-        const rows = [];
+            const rows = [];
 
-        let row = [];
+            let row = [];
 
-        let value = '';
+            let value = '';
 
-        let insideQuotes = false;
-
-
-        for (
-            let i = 0;
-            i < text.length;
-            i++
-        ) {
-
-            const char =
-                text[i];
-
-            const nextChar =
-                text[i + 1];
+            let insideQuotes = false;
 
 
-            /*
-            | Double quote di dalam quote
-            */
-
-            if (
-                char === '"' &&
-                insideQuotes &&
-                nextChar === '"'
+            for (
+                let i = 0; i < text.length; i++
             ) {
 
-                value += '"';
+                const char =
+                    text[i];
 
-                i++;
-
-            }
-
-
-            /*
-            | Mulai / selesai quote
-            */
-
-            else if (
-                char === '"'
-            ) {
-
-                insideQuotes =
-                    !insideQuotes;
-
-            }
+                const nextChar =
+                    text[i + 1];
 
 
-            /*
-            | Comma
-            */
+                /*
+                | Double quote di dalam quote
+                */
 
-            else if (
-                char === ',' &&
-                !insideQuotes
-            ) {
-
-                row.push(value);
-
-                value = '';
-
-            }
-
-
-            /*
-            | New line
-            */
-
-            else if (
-                (char === '\n' ||
-                 char === '\r') &&
-                !insideQuotes
-            ) {
-
-                // Windows CRLF
                 if (
-                    char === '\r' &&
-                    nextChar === '\n'
+                    char === '"' &&
+                    insideQuotes &&
+                    nextChar === '"'
                 ) {
+
+                    value += '"';
 
                     i++;
 
                 }
 
 
-                row.push(value);
+                /*
+                | Mulai / selesai quote
+                */
+                else if (
+                    char === '"'
+                ) {
 
-                rows.push(row);
+                    insideQuotes = !insideQuotes;
 
-                row = [];
+                }
 
-                value = '';
+
+                /*
+                | Comma
+                */
+                else if (
+                    char === ',' &&
+                    !insideQuotes
+                ) {
+
+                    row.push(value);
+
+                    value = '';
+
+                }
+
+
+                /*
+                | New line
+                */
+                else if (
+                    (char === '\n' ||
+                        char === '\r') &&
+                    !insideQuotes
+                ) {
+
+                    // Windows CRLF
+                    if (
+                        char === '\r' &&
+                        nextChar === '\n'
+                    ) {
+
+                        i++;
+
+                    }
+
+
+                    row.push(value);
+
+                    rows.push(row);
+
+                    row = [];
+
+                    value = '';
+
+                }
+
+
+                /*
+                | Character biasa
+                */
+                else {
+
+                    value += char;
+
+                }
 
             }
 
 
             /*
-            | Character biasa
+            | Tambahkan row terakhir
             */
 
-            else {
+            if (
+                value !== '' ||
+                row.length > 0
+            ) {
 
-                value += char;
+                row.push(value);
+
+                rows.push(row);
 
             }
 
-        }
 
-
-        /*
-        | Tambahkan row terakhir
-        */
-
-        if (
-            value !== '' ||
-            row.length > 0
-        ) {
-
-            row.push(value);
-
-            rows.push(row);
+            return rows;
 
         }
-
-
-        return rows;
-
-    }
-
-</script>
+    </script>
 @endsection
