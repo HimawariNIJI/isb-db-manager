@@ -100,46 +100,49 @@
                         <div class="col-lg-6">
 
                             <!-- 1. Pilih User / Mahasiswa -->
-                            <div class="section-card mb-4">
-                                <div class="section-header">
-                                    <div>
-                                        <h5>1. Pilih User / Mahasiswa</h5>
-                                        <p>Centang user yang akan diberikan hak akses</p>
-                                    </div>
-                                </div>
+                            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                                <div class="card-body p-4">
+                                    <h5 class="fw-bold mb-1">1. Pilih User / Mahasiswa</h5>
+                                    <p class="text-muted small mb-3">Centang user yang akan diberikan hak akses</p>
 
-                                <div class="table-responsive">
-                                    <table class="table custom-table align-middle">
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 40px;">
-                                                    <input class="form-check-input" type="checkbox" id="selectAllUsers">
-                                                </th>
-                                                <th>NIM</th>
-                                                <th>Nama Mahasiswa</th>
-                                                <th>Username DB</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @forelse($students as $student)
+                                    <!-- Search Bar Filter -->
+                                    <div class="mb-3">
+                                        <input type="text" id="searchUserInput" class="form-control form-control-sm"
+                                            placeholder="Cari NIM, Nama, atau Username DB...">
+                                    </div>
+
+                                    <!-- Scrollable Container (Tinggi maks untuk 5 baris + header sticky) -->
+                                    <div class="table-responsive border rounded"
+                                        style="max-height: 270px; overflow-y: auto;">
+                                        <table class="table table-hover align-middle mb-0" style="width: 100%;">
+                                            <thead class="table-light small text-uppercase"
+                                                style="position: sticky; top: 0; background-color: #f8f9fa; z-index: 2;">
                                                 <tr>
-                                                    <td>
-                                                        <input class="form-check-input user-checkbox" type="checkbox"
-                                                            name="users[]" value="{{ $student->id }}">
-                                                    </td>
-                                                    <td>{{ $student->nim }}</td>
-                                                    <td>{{ $student->nama }}</td>
-                                                    <td><code>{{ $student->mysql_username }}</code></td>
+                                                    <th style="width: 10%;" class="text-center">
+                                                        <input class="form-check-input" type="checkbox" id="selectAllUsers">
+                                                    </th>
+                                                    <th style="width: 30%;">NIM</th>
+                                                    <th style="width: 35%;">NAMA MAHASISWA</th>
+                                                    <th style="width: 25%;">USERNAME DB</th>
                                                 </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="4" class="text-center py-3 text-muted">
-                                                        Belum ada data mahasiswa terdaftar.
-                                                    </td>
-                                                </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody class="small">
+                                                @foreach ($students as $student)
+                                                    <tr class="user-row">
+                                                        <td class="text-center">
+                                                            <!-- ATRIBUT name="users[]" DAN value PENTING UNTUK CONTROLLER -->
+                                                            <input class="form-check-input user-checkbox" type="checkbox"
+                                                                name="users[]" value="{{ $student->id }}">
+                                                        </td>
+                                                        <td class="search-nim">{{ $student->nim }}</td>
+                                                        <td class="fw-bold search-nama">{{ $student->nama }}</td>
+                                                        <td class="text-danger font-monospace search-user">
+                                                            {{ $student->mysql_username }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
 
@@ -913,6 +916,38 @@
 
             // Initial load check
             updatePermissionsState();
+            // Filter Live Search untuk Tabel Pilih Mahasiswa
+            const searchUserInput = document.getElementById('searchUserInput');
+            if (searchUserInput) {
+                searchUserInput.addEventListener('keyup', function() {
+                    const query = this.value.toLowerCase();
+                    document.querySelectorAll('.user-row').forEach(row => {
+                        const nim = row.querySelector('.search-nim')?.textContent.toLowerCase() ||
+                            '';
+                        const nama = row.querySelector('.search-nama')?.textContent.toLowerCase() ||
+                            '';
+                        const user = row.querySelector('.search-user')?.textContent.toLowerCase() ||
+                            '';
+
+                        if (nim.includes(query) || nama.includes(query) || user.includes(query)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            }
+
+            // PROTEKSI: Buka semua status disabled pada checkbox saat form disubmit agar data 'users[]' selalu terkirim
+            const grantForm = document.querySelector('form');
+            if (grantForm) {
+                grantForm.addEventListener('submit', function() {
+                    document.querySelectorAll('.user-checkbox, .perm-checkbox, .table-checkbox').forEach(
+                        cb => {
+                            cb.disabled = false;
+                        });
+                });
+            }
         });
     </script>
 @endsection
