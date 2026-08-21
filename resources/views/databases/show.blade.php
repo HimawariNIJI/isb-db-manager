@@ -102,7 +102,7 @@
                             <!-- 1. Pilih User / Mahasiswa -->
                             <div class="card border-0 shadow-sm rounded-3 mb-4">
                                 <div class="card-body p-4">
-                                    <h5 class="fw-bold mb-1">1. Pilih User / Mahasiswa</h5>
+                                    <h5 class="fw-bold mb-1">Pilih User / Mahasiswa</h5>
                                     <p class="text-muted small mb-3">Centang user yang akan diberikan hak akses</p>
 
                                     <!-- Search Bar Filter -->
@@ -151,7 +151,7 @@
                                 <div class="section-header border-bottom pb-2 mb-3">
                                     <div class="d-flex align-items-center justify-content-between w-100">
                                         <div>
-                                            <h5>2. Pilih Tabel / View Target</h5>
+                                            <h5>Pilih Tabel / View Target</h5>
                                             <p class="mb-0">Pilih tabel atau view yang boleh diakses</p>
                                         </div>
                                         @if (count($tables) == 0)
@@ -208,7 +208,7 @@
                                 <div class="section-header border-bottom pb-2 mb-3">
                                     <div class="d-flex align-items-center justify-content-between w-100">
                                         <div>
-                                            <h5>3. Pilih Stored Procedure Target</h5>
+                                            <h5>Pilih Stored Procedure Target</h5>
                                             <p class="mb-0">Pilih Stored Procedure yang boleh dikelola / dieksekusi</p>
                                         </div>
                                         @if (count($procedures) == 0)
@@ -261,7 +261,7 @@
                                 <div class="section-header border-bottom pb-2 mb-3">
                                     <div class="d-flex align-items-center justify-content-between w-100">
                                         <div>
-                                            <h5>4. Pilih Stored Function Target</h5>
+                                            <h5>Pilih Stored Function Target</h5>
                                             <p class="mb-0">Pilih Stored Function yang boleh dikelola / dieksekusi</p>
                                         </div>
                                         @if (count($functions) == 0)
