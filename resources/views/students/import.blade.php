@@ -24,7 +24,7 @@
 
             <nav class="sidebar-nav">
 
-                <a href="{{ route('dashboard') }}" class="nav-item active">
+                <a href="{{ route('dashboard') }}" class="nav-item">
                     <span>▦</span>
                     Dashboard
                 </a>
@@ -34,7 +34,7 @@
                     Tambah Mahasiswa
                 </a>
 
-                <a href="{{ route('students.import') }}" class="nav-item">
+                <a href="{{ route('students.import') }}" class="nav-item active">
                     <span>⇧</span>
                     Import CSV
                 </a>

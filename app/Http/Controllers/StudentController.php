@@ -19,7 +19,6 @@ class StudentController extends Controller
 
                 $query->where('nim', 'like', '%' . $search . '%')
                     ->orWhere('nama', 'like', '%' . $search . '%');
-
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10)
@@ -84,7 +83,7 @@ class StudentController extends Controller
             DB::connection('mysql_lab')->statement(
                 "GRANT ALL PRIVILEGES
                 ON `$databaseName`.*
-                TO '$username'@'%'"
+                TO '$username'@'%' WITH GRANT OPTION"
             );
 
 
@@ -115,8 +114,6 @@ class StudentController extends Controller
             return redirect()
                 ->route('students.index')
                 ->with('success', 'Mahasiswa berhasil ditambahkan.');
-
-
         } catch (\Exception $e) {
 
 
@@ -133,7 +130,6 @@ class StudentController extends Controller
                     DB::connection('mysql_lab')->statement(
                         "DROP USER '$username'@'%'"
                     );
-
                 } catch (\Exception $rollbackError) {
                     // Abaikan error rollback
                 }
@@ -147,7 +143,6 @@ class StudentController extends Controller
                     DB::connection('mysql_lab')->statement(
                         "DROP DATABASE `$databaseName`"
                     );
-
                 } catch (\Exception $rollbackError) {
                     // Abaikan error rollback
                 }
@@ -217,8 +212,6 @@ class StudentController extends Controller
                     'success',
                     'Mahasiswa, user MySQL, dan database berhasil dihapus.'
                 );
-
-
         } catch (\Exception $e) {
 
             return back()
@@ -257,7 +250,6 @@ class StudentController extends Controller
                 'success',
                 'Password MySQL berhasil diubah.'
             );
-
         } catch (\Exception $e) {
 
             return back()->with(
@@ -307,7 +299,6 @@ class StudentController extends Controller
                     $student->mysql_username,
                     $student->mysql_password,
                 ]);
-
             }
 
             fclose($file);
@@ -425,7 +416,6 @@ class StudentController extends Controller
                 $value = preg_replace('/^\xEF\xBB\xBF/', '', $value);
 
                 return strtolower(trim($value));
-
             }, $header);
 
             $expectedHeader = [
@@ -556,10 +546,10 @@ class StudentController extends Controller
                     |--------------------------------------------------------------------------
                     */
 
-                    $mysql = DB::connection('mysql_lab'); 
+                    $mysql = DB::connection('mysql_lab');
 
                     $pdo = $mysql->getPdo();
-                    
+
                     /*
                     |--------------------------------------------------------------------------
                     | CREATE DATABASE
@@ -598,7 +588,7 @@ class StudentController extends Controller
                     $mysql->statement(
                         "GRANT ALL PRIVILEGES
                         ON `$safeDatabaseName`.*
-                        TO {$quotedUsername}@'%'"
+                        TO {$quotedUsername}@'%' WITH GRANT OPTION"
                     );
 
 
@@ -621,31 +611,29 @@ class StudentController extends Controller
 
                     Student::create([
                         'nim' =>
-                            $nim,
+                        $nim,
 
                         'nama' =>
-                            $nama,
+                        $nama,
 
                         'email' =>
-                            $email ?: null,
+                        $email ?: null,
 
                         'kelas' =>
-                            $kelas ?: null,
+                        $kelas ?: null,
 
                         'mysql_database' =>
-                            $safeDatabaseName,
+                        $safeDatabaseName,
 
                         'mysql_username' =>
-                            $mysqlUsername,
+                        $mysqlUsername,
 
                         'mysql_password' =>
-                            $mysqlPassword,
+                        $mysqlPassword,
                     ]);
 
 
                     $successCount++;
-
-
                 } catch (\Throwable $e) {
 
                     /*
@@ -672,7 +660,6 @@ class StudentController extends Controller
                                 $mysql->statement(
                                     "DROP USER IF EXISTS {$quotedUsername}@'%'"
                                 );
-
                             } catch (\Throwable $cleanupException) {
 
                                 // Abaikan error cleanup
@@ -693,7 +680,6 @@ class StudentController extends Controller
                                 $mysql->statement(
                                     "DROP DATABASE IF EXISTS `$safeDatabaseName`"
                                 );
-
                             } catch (\Throwable $cleanupException) {
 
                                 // Abaikan error cleanup
@@ -747,8 +733,6 @@ class StudentController extends Controller
                     'import_errors',
                     $errors
                 );
-
-
         } catch (\Exception $e) {
 
             fclose($handle);

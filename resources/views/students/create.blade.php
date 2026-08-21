@@ -22,12 +22,12 @@
 
         <nav class="sidebar-nav">
 
-            <a href="{{ route('dashboard') }}" class="nav-item active">
+            <a href="{{ route('dashboard') }}" class="nav-item">
                 <span>▦</span>
                 Dashboard
             </a>
 
-            <a href="{{ route('students.create') }}" class="nav-item">
+            <a href="{{ route('students.create') }}" class="nav-item active">
                 <span>＋</span>
                 Tambah Mahasiswa
             </a>
