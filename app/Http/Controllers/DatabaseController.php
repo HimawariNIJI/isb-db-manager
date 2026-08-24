@@ -196,95 +196,51 @@ class DatabaseController extends Controller
             'permissions.required' => 'Pilih minimal satu hak akses (privilege).',
         ]);
 
-        if (
-            !$request->has('all_tables') && empty($request->tables) &&
-            !$request->has('all_procedures') && empty($request->procedures) &&
-            !$request->has('all_functions') && empty($request->functions)
-        ) {
-            return redirect()->back()->withErrors(['target' => 'Pilih minimal satu Tabel, View, Procedure, atau Function target.']);
+        // Pengelompokan Permissions
+        $globalDbPrivsAllowed = ['CREATE', 'CREATE VIEW', 'CREATE ROUTINE'];
+        $tablePrivsAllowed    = ['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'ALTER', 'DROP', 'INDEX', 'REFERENCES', 'TRIGGER', 'SHOW VIEW'];
+        $routinePrivsAllowed  = ['EXECUTE', 'ALTER ROUTINE'];
+
+        $permissions = $request->permissions;
+
+        $grantedGlobal  = array_intersect($permissions, $globalDbPrivsAllowed);
+        $grantedTable   = array_intersect($permissions, $tablePrivsAllowed);
+        $grantedRoutine = array_intersect($permissions, $routinePrivsAllowed);
+
+        $hasTableTarget   = $request->has('all_tables') || !empty($request->tables);
+        $hasRoutineTarget = $request->has('all_procedures') || !empty($request->procedures) || $request->has('all_functions') || !empty($request->functions);
+
+        // Validasi Relasional (Hak Akses terhadap Target)
+        if (empty($grantedGlobal) && !$hasTableTarget && !$hasRoutineTarget) {
+            return redirect()->back()->withErrors(['target' => 'Pilih minimal satu Tabel, View, Procedure, atau Function target (Kecuali jika Anda mengatur Database Global).']);
+        }
+        if (!empty($grantedTable) && !$hasTableTarget) {
+            return redirect()->back()->withErrors(['target' => 'Anda memilih hak akses Tabel/Data/View, tetapi tidak memilih target Tabel atau View.']);
+        }
+        if (!empty($grantedRoutine) && !$hasRoutineTarget) {
+            return redirect()->back()->withErrors(['target' => 'Anda memilih hak akses Procedure/Function, tetapi tidak memilih target Routine.']);
         }
 
         $database = Student::findOrFail($id);
         $dbName   = trim($database->mysql_database);
         $students = Student::whereIn('id', $request->users)->get();
 
-        $permissions      = $request->permissions;
-        $isAll            = in_array('ALL', $permissions);
-        $hasCreateRoutine = in_array('CREATE ROUTINE', $permissions);
-
-        // 1. Privileges valid untuk Database Level (db.*)
-        $schemaAllowed = [
-            'SELECT',
-            'INSERT',
-            'UPDATE',
-            'DELETE',
-            'CREATE',
-            'ALTER',
-            'DROP',
-            'INDEX',
-            'REFERENCES',
-            'TRIGGER',
-            'CREATE VIEW',
-            'SHOW VIEW',
-            'CREATE ROUTINE',
-            'ALTER ROUTINE',
-            'EXECUTE'
-        ];
-
-        // 2. Privileges valid khusus Tabel Spesifik (db.table_name)
-        $tableOnlyAllowed = [
-            'SELECT',
-            'INSERT',
-            'UPDATE',
-            'DELETE',
-            'CREATE',
-            'ALTER',
-            'DROP',
-            'INDEX',
-            'REFERENCES',
-            'TRIGGER'
-        ];
-
-        // 3. Privileges valid khusus Routine Spesifik (PROCEDURE / FUNCTION)
-        $routineAllowed = ['EXECUTE', 'ALTER ROUTINE'];
-
-        $schemaPrivileges  = $isAll ? 'ALL PRIVILEGES' : implode(', ', array_intersect($permissions, $schemaAllowed));
-        $tablePrivileges   = $isAll ? 'ALL PRIVILEGES' : implode(', ', array_intersect($permissions, $tableOnlyAllowed));
-        $routinePrivileges = $isAll ? 'ALL PRIVILEGES' : implode(', ', array_intersect($permissions, $routineAllowed));
-
-        // Ambil daftar Procedure target
+        // 1. Ambil nama Procedure Targets
         $targetProcedures = [];
         if ($request->has('all_procedures')) {
-            $rawProcs = DB::connection('mysql_lab')->select("
-            SELECT ROUTINE_NAME FROM information_schema.ROUTINES 
-            WHERE LOWER(ROUTINE_SCHEMA) = LOWER(?) AND ROUTINE_TYPE = 'PROCEDURE'
-        ", [$dbName]);
+            $rawProcs = DB::connection('mysql_lab')->select("SELECT ROUTINE_NAME FROM information_schema.ROUTINES WHERE LOWER(ROUTINE_SCHEMA) = LOWER(?) AND ROUTINE_TYPE = 'PROCEDURE'", [$dbName]);
             $targetProcedures = collect($rawProcs)->pluck('ROUTINE_NAME')->toArray();
         } elseif (!empty($request->procedures)) {
             $targetProcedures = $request->procedures;
         }
 
-        // Ambil daftar Function target
+        // 2. Ambil nama Function Targets
         $targetFunctions = [];
         if ($request->has('all_functions')) {
-            $rawFuncs = DB::connection('mysql_lab')->select("
-            SELECT ROUTINE_NAME FROM information_schema.ROUTINES 
-            WHERE LOWER(ROUTINE_SCHEMA) = LOWER(?) AND ROUTINE_TYPE = 'FUNCTION'
-        ", [$dbName]);
+            $rawFuncs = DB::connection('mysql_lab')->select("SELECT ROUTINE_NAME FROM information_schema.ROUTINES WHERE LOWER(ROUTINE_SCHEMA) = LOWER(?) AND ROUTINE_TYPE = 'FUNCTION'", [$dbName]);
             $targetFunctions = collect($rawFuncs)->pluck('ROUTINE_NAME')->toArray();
         } elseif (!empty($request->functions)) {
             $targetFunctions = $request->functions;
-        }
-
-        // Validasi pencegahan query kosong
-        if ($request->has('all_tables') && empty($schemaPrivileges)) {
-            return redirect()->back()->withErrors(['permissions' => 'Pilih hak akses yang valid untuk tingkat database.']);
-        }
-        if (!empty($request->tables) && empty($tablePrivileges) && !$hasCreateRoutine) {
-            return redirect()->back()->withErrors(['permissions' => 'Pilih hak akses tabel yang valid (misal: SELECT, INSERT, UPDATE, DELETE).']);
-        }
-        if ((!empty($targetProcedures) || !empty($targetFunctions)) && empty($routinePrivileges) && !$hasCreateRoutine) {
-            return redirect()->back()->withErrors(['permissions' => 'Hak akses Routine hanya mendukung EXECUTE, ALTER ROUTINE, atau ALL PRIVILEGES.']);
         }
 
         try {
@@ -296,45 +252,51 @@ class DatabaseController extends Controller
                 $hosts = !empty($userHosts) ? collect($userHosts)->pluck('Host')->toArray() : ['%'];
 
                 foreach ($hosts as $host) {
-                    // A. Grant Seluruh Database (db.*)
-                    if ($request->has('all_tables') && $schemaPrivileges) {
-                        DB::connection('mysql_lab')->statement("GRANT {$schemaPrivileges} ON `{$dbName}`.* TO '{$username}'@'{$host}'");
-                    } else {
-                        // LOGIK KHUSUS: Jika tidak memilih "Semua Tabel", tetapi mencentang "CREATE ROUTINE"
-                        if ($hasCreateRoutine) {
-                            DB::connection('mysql_lab')->statement("GRANT CREATE ROUTINE ON `{$dbName}`.* TO '{$username}'@'{$host}'");
-                        }
+                    
+                    // A. Terapkan Akses Database Global (db.*)
+                    if (!empty($grantedGlobal)) {
+                        $globalStr = implode(', ', $grantedGlobal);
+                        DB::connection('mysql_lab')->statement("GRANT {$globalStr} ON `{$dbName}`.* TO '{$username}'@'{$host}'");
+                    }
 
-                        // B. Grant Tabel Spesifik (db.table_name)
-                        if (!empty($request->tables) && $tablePrivileges) {
+                    // B. Terapkan Akses Tabel Spesifik / Seluruh Tabel
+                    if (!empty($grantedTable)) {
+                        $tableStr = implode(', ', $grantedTable);
+                        if ($request->has('all_tables')) {
+                            DB::connection('mysql_lab')->statement("GRANT {$tableStr} ON `{$dbName}`.* TO '{$username}'@'{$host}'");
+                        } elseif (!empty($request->tables)) {
                             foreach ($request->tables as $table) {
-                                DB::connection('mysql_lab')->statement("GRANT {$tablePrivileges} ON `{$dbName}`.`{$table}` TO '{$username}'@'{$host}'");
+                                DB::connection('mysql_lab')->statement("GRANT {$tableStr} ON `{$dbName}`.`{$table}` TO '{$username}'@'{$host}'");
                             }
                         }
                     }
 
-                    // C. Grant Stored Procedures Spesifik
-                    if (!empty($targetProcedures) && $routinePrivileges) {
-                        foreach ($targetProcedures as $proc) {
-                            DB::connection('mysql_lab')->statement("GRANT {$routinePrivileges} ON PROCEDURE `{$dbName}`.`{$proc}` TO '{$username}'@'{$host}'");
+                    // C. Terapkan Akses Routine
+                    if (!empty($grantedRoutine)) {
+                        $routineStr = implode(', ', $grantedRoutine);
+                        // Procedure
+                        if (!empty($targetProcedures)) {
+                            foreach ($targetProcedures as $proc) {
+                                DB::connection('mysql_lab')->statement("GRANT {$routineStr} ON PROCEDURE `{$dbName}`.`{$proc}` TO '{$username}'@'{$host}'");
+                            }
                         }
-                    }
-
-                    // D. Grant Stored Functions Spesifik
-                    if (!empty($targetFunctions) && $routinePrivileges) {
-                        foreach ($targetFunctions as $func) {
-                            DB::connection('mysql_lab')->statement("GRANT {$routinePrivileges} ON FUNCTION `{$dbName}`.`{$func}` TO '{$username}'@'{$host}'");
+                        // Function
+                        if (!empty($targetFunctions)) {
+                            foreach ($targetFunctions as $func) {
+                                DB::connection('mysql_lab')->statement("GRANT {$routineStr} ON FUNCTION `{$dbName}`.`{$func}` TO '{$username}'@'{$host}'");
+                            }
                         }
                     }
                 }
             }
 
             DB::connection('mysql_lab')->statement("FLUSH PRIVILEGES;");
-            return redirect()->back()->with('success', 'Hak akses berhasil diterapkan.');
+            return redirect()->back()->with('success', 'Hak akses berhasil diterapkan sesuai targetnya.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal menerapkan hak akses: ' . $e->getMessage());
         }
     }
+    
     public function revokeAccess(Request $request, $id)
     {
         $request->validate([

@@ -325,7 +325,100 @@
                                 <div class="p-3 pt-0">
 
                                     <div class="row g-3 mb-4">
-                                        <!-- 1. DATA -->
+                                        <!-- 1. DATABASE -->
+                                        <div class="col-md-6">
+                                            <div class="border rounded p-3 bg-light h-100">
+                                                <div
+                                                    class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+                                                    <strong class="text-uppercase text-secondary small">DATABASE</strong>
+                                                    <div class="form-check mb-0">
+                                                        <input class="form-check-input select-all-group" type="checkbox"
+                                                            id="selectAllDatabase" data-target=".database-perm">
+                                                        <label class="form-check-label small text-muted fw-semibold"
+                                                            for="selectAllDatabase">Pilih Semua</label>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex flex-column gap-1">
+                                                    <div class="form-check">
+                                                        <input
+                                                            class="form-check-input perm-checkbox database-perm"
+                                                            type="checkbox" name="permissions[]" value="CREATE"
+                                                            id="permCreate">
+                                                        <label class="form-check-label" for="permCreate">CREATE</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input
+                                                            class="form-check-input perm-checkbox database-perm"
+                                                            type="checkbox" name="permissions[]" value="CREATE VIEW"
+                                                            id="permCreateView">
+                                                        <label class="form-check-label" for="permCreateView">CREATE VIEW</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input
+                                                            class="form-check-input perm-checkbox database-perm"
+                                                            type="checkbox" name="permissions[]" value="CREATE ROUTINE"
+                                                            id="permCreateRoutine">
+                                                        <label class="form-check-label" for="permCreateRoutine">CREATE ROUTINE</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 2. TABLE -->
+                                        <div class="col-md-6">
+                                            <div class="border rounded p-3 bg-light h-100">
+                                                <div
+                                                    class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+                                                    <strong class="text-uppercase text-secondary small">TABLE</strong>
+                                                    <div class="form-check mb-0">
+                                                        <input class="form-check-input select-all-group" type="checkbox"
+                                                            id="selectAllTable" data-target=".table-structure-perm">
+                                                        <label class="form-check-label small text-muted fw-semibold"
+                                                            for="selectAllTable">Pilih Semua</label>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex flex-column gap-1">
+                                                    <div class="form-check">
+                                                        <input
+                                                            class="form-check-input perm-checkbox table-perm-checkbox table-structure-perm"
+                                                            type="checkbox" name="permissions[]" value="ALTER"
+                                                            id="permAlter">
+                                                        <label class="form-check-label" for="permAlter">ALTER</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input
+                                                            class="form-check-input perm-checkbox table-perm-checkbox table-structure-perm"
+                                                            type="checkbox" name="permissions[]" value="DROP"
+                                                            id="permDrop">
+                                                        <label class="form-check-label" for="permDrop">DROP</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input
+                                                            class="form-check-input perm-checkbox table-perm-checkbox table-structure-perm"
+                                                            type="checkbox" name="permissions[]" value="INDEX"
+                                                            id="permIndex">
+                                                        <label class="form-check-label" for="permIndex">INDEX</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input
+                                                            class="form-check-input perm-checkbox table-perm-checkbox table-structure-perm"
+                                                            type="checkbox" name="permissions[]" value="REFERENCES"
+                                                            id="permReferences">
+                                                        <label class="form-check-label"
+                                                            for="permReferences">REFERENCES</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input
+                                                            class="form-check-input perm-checkbox table-perm-checkbox table-structure-perm"
+                                                            type="checkbox" name="permissions[]" value="TRIGGER"
+                                                            id="permTrigger">
+                                                        <label class="form-check-label" for="permTrigger">TRIGGER</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 3. DATA -->
                                         <div class="col-md-6">
                                             <div class="border rounded p-3 bg-light h-100">
                                                 <div
@@ -371,68 +464,7 @@
                                             </div>
                                         </div>
 
-                                        <!-- 2. TABLE -->
-                                        <div class="col-md-6">
-                                            <div class="border rounded p-3 bg-light h-100">
-                                                <div
-                                                    class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
-                                                    <strong class="text-uppercase text-secondary small">TABLE</strong>
-                                                    <div class="form-check mb-0">
-                                                        <input class="form-check-input select-all-group" type="checkbox"
-                                                            id="selectAllTable" data-target=".table-structure-perm">
-                                                        <label class="form-check-label small text-muted fw-semibold"
-                                                            for="selectAllTable">Pilih Semua</label>
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex flex-column gap-1">
-                                                    <div class="form-check">
-                                                        <input
-                                                            class="form-check-input perm-checkbox table-perm-checkbox table-structure-perm"
-                                                            type="checkbox" name="permissions[]" value="CREATE"
-                                                            id="permCreate">
-                                                        <label class="form-check-label" for="permCreate">CREATE</label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input
-                                                            class="form-check-input perm-checkbox table-perm-checkbox table-structure-perm"
-                                                            type="checkbox" name="permissions[]" value="ALTER"
-                                                            id="permAlter">
-                                                        <label class="form-check-label" for="permAlter">ALTER</label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input
-                                                            class="form-check-input perm-checkbox table-perm-checkbox table-structure-perm"
-                                                            type="checkbox" name="permissions[]" value="DROP"
-                                                            id="permDrop">
-                                                        <label class="form-check-label" for="permDrop">DROP</label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input
-                                                            class="form-check-input perm-checkbox table-perm-checkbox table-structure-perm"
-                                                            type="checkbox" name="permissions[]" value="INDEX"
-                                                            id="permIndex">
-                                                        <label class="form-check-label" for="permIndex">INDEX</label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input
-                                                            class="form-check-input perm-checkbox table-perm-checkbox table-structure-perm"
-                                                            type="checkbox" name="permissions[]" value="REFERENCES"
-                                                            id="permReferences">
-                                                        <label class="form-check-label"
-                                                            for="permReferences">REFERENCES</label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input
-                                                            class="form-check-input perm-checkbox table-perm-checkbox table-structure-perm"
-                                                            type="checkbox" name="permissions[]" value="TRIGGER"
-                                                            id="permTrigger">
-                                                        <label class="form-check-label" for="permTrigger">TRIGGER</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- 3. VIEW -->
+                                        <!-- 4. VIEW -->
                                         <div class="col-md-6">
                                             <div class="border rounded p-3 bg-light h-100">
                                                 <div
@@ -449,14 +481,6 @@
                                                     <div class="form-check">
                                                         <input
                                                             class="form-check-input perm-checkbox table-perm-checkbox view-perm"
-                                                            type="checkbox" name="permissions[]" value="CREATE VIEW"
-                                                            id="permCreateView">
-                                                        <label class="form-check-label" for="permCreateView">CREATE
-                                                            VIEW</label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input
-                                                            class="form-check-input perm-checkbox table-perm-checkbox view-perm"
                                                             type="checkbox" name="permissions[]" value="SHOW VIEW"
                                                             id="permShowView">
                                                         <label class="form-check-label" for="permShowView">SHOW
@@ -466,7 +490,7 @@
                                             </div>
                                         </div>
 
-                                        <!-- 4. PROCEDURE / FUNCTION -->
+                                        <!-- 5. PROCEDURE / FUNCTION -->
                                         <div class="col-md-6">
                                             <div class="border rounded p-3 bg-light h-100">
                                                 <div
@@ -481,14 +505,6 @@
                                                     </div>
                                                 </div>
                                                 <div class="d-flex flex-column gap-1">
-                                                    <div class="form-check">
-                                                        <input
-                                                            class="form-check-input perm-checkbox routine-perm-checkbox routine-perm"
-                                                            type="checkbox" name="permissions[]" value="CREATE ROUTINE"
-                                                            id="permCreateRoutine">
-                                                        <label class="form-check-label" for="permCreateRoutine">CREATE
-                                                            ROUTINE (Global)</label>
-                                                    </div>
                                                     <div class="form-check">
                                                         <input
                                                             class="form-check-input perm-checkbox routine-perm-checkbox routine-perm"
@@ -712,240 +728,197 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
             // User Selectors
             const selectAllUsers = document.getElementById('selectAllUsers');
             const userCheckboxes = document.querySelectorAll('.user-checkbox');
 
-            // Table Selectors
+            // Targets Selectors
             const allTablesCb = document.getElementById('allTables');
             const tableCheckboxes = document.querySelectorAll('.table-checkbox');
-            const tablePermCheckboxes = document.querySelectorAll('.table-perm-checkbox');
-            const totalTables = {{ count($tables) }};
 
-            // Procedure Selectors
             const allProceduresCb = document.getElementById('allProcedures');
             const procedureCheckboxes = document.querySelectorAll('.procedure-checkbox');
 
-            // Function Selectors
             const allFunctionsCb = document.getElementById('allFunctions');
             const functionCheckboxes = document.querySelectorAll('.function-checkbox');
 
-            // Combined Routine Selectors
-            const routineCheckboxes = document.querySelectorAll('.routine-checkbox');
-            const routinePermCheckboxes = document.querySelectorAll('.routine-perm-checkbox');
-            const totalRoutines = {{ count($procedures) + count($functions) }};
+            // Permission Groups Selectors
+            const databasePermCheckboxes = document.querySelectorAll('.database-perm');
+            const tableStructurePermCheckboxes = document.querySelectorAll('.table-structure-perm');
+            const dataPermCheckboxes = document.querySelectorAll('.data-perm');
+            const viewPermCheckboxes = document.querySelectorAll('.view-perm');
+            const routinePermCheckboxes = document.querySelectorAll('.routine-perm');
 
-            // Privilege Selectors
-            const grantAllCb = document.getElementById('grantAll');
-            const permCheckboxes = document.querySelectorAll('.perm-checkbox');
-
-            // Notice & Create Routine Selectors
-            const createRoutineCb = document.querySelector('input[value="CREATE ROUTINE"]');
-            const noticeBox = document.getElementById('createRoutineNotice');
-
-            // Group Select All Selectors
+            // Group Select All Checkboxes
             const groupSelectAllCbs = document.querySelectorAll('.select-all-group');
 
-            // Flag untuk mencegah konflik loop saat centang bersamaan
             let isBulkUpdating = false;
 
-            // 1. Toggle Check All Users
+            // 1. Listeners untuk Checkbox User
             if (selectAllUsers) {
                 selectAllUsers.addEventListener('change', function() {
                     userCheckboxes.forEach(cb => cb.checked = this.checked);
+                    updatePermissionStates();
                 });
             }
 
-            // 2. Toggle All Tables Target
+            function syncSelectAllUsers() {
+                if (userCheckboxes.length > 0) {
+                    const allChecked = Array.from(userCheckboxes).every(cb => cb.checked);
+                    selectAllUsers.checked = allChecked;
+                }
+            }
+
+            userCheckboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    syncSelectAllUsers();
+                    updatePermissionStates();
+                });
+            });
+
+            // 2. Listeners untuk Checkbox Targets
             if (allTablesCb) {
                 allTablesCb.addEventListener('change', function() {
                     tableCheckboxes.forEach(cb => {
                         cb.disabled = this.checked;
                         if (this.checked) cb.checked = false;
                     });
-                    updatePermissionsState();
+                    updatePermissionStates();
                 });
             }
+            tableCheckboxes.forEach(cb => cb.addEventListener('change', updatePermissionStates));
 
-            // 3. Toggle All Procedures Target
             if (allProceduresCb) {
                 allProceduresCb.addEventListener('change', function() {
                     procedureCheckboxes.forEach(cb => {
                         cb.disabled = this.checked;
                         if (this.checked) cb.checked = false;
                     });
-                    updatePermissionsState();
+                    updatePermissionStates();
                 });
             }
+            procedureCheckboxes.forEach(cb => cb.addEventListener('change', updatePermissionStates));
 
-            // 4. Toggle All Functions Target
             if (allFunctionsCb) {
                 allFunctionsCb.addEventListener('change', function() {
                     functionCheckboxes.forEach(cb => {
                         cb.disabled = this.checked;
                         if (this.checked) cb.checked = false;
                     });
-                    updatePermissionsState();
+                    updatePermissionStates();
                 });
             }
+            functionCheckboxes.forEach(cb => cb.addEventListener('change', updatePermissionStates));
 
-            // 5. Toggle ALL PRIVILEGES
-            if (grantAllCb) {
-                grantAllCb.addEventListener('change', function() {
-                    permCheckboxes.forEach(cb => {
-                        cb.disabled = this.checked;
-                        if (this.checked) cb.checked = false;
-                    });
-                    groupSelectAllCbs.forEach(cb => {
-                        cb.disabled = this.checked;
-                        if (this.checked) cb.checked = false;
-                    });
-                    if (!this.checked) {
-                        updatePermissionsState();
-                    }
-                });
-            }
+            // 3. Logika Inti: Menghidupkan/Mematikan (Enable/Disable) Checkbox Hak Akses
+            function updatePermissionStates() {
+                const hasUserSelected = Array.from(userCheckboxes).some(cb => cb.checked);
+                
+                const hasTableSelected = (allTablesCb && allTablesCb.checked) || 
+                                        Array.from(tableCheckboxes).some(cb => cb.checked);
+                                        
+                const hasRoutineSelected = (allProceduresCb && allProceduresCb.checked) ||
+                                        (allFunctionsCb && allFunctionsCb.checked) ||
+                                        Array.from(procedureCheckboxes).some(cb => cb.checked) ||
+                                        Array.from(functionCheckboxes).some(cb => cb.checked);
 
-            // 6. Logika Penonaktifan Otomatis Checkbox Privilege
-            function updatePermissionsState() {
-                if (grantAllCb && grantAllCb.checked) return;
+                // A. DATABASE: Aktif selama ada User yang dipilih
+                toggleCheckboxes(databasePermCheckboxes, hasUserSelected);
 
-                // --- TABEL / VIEW PERMISSIONS ---
-                const isAllTablesSelected = allTablesCb && allTablesCb.checked;
-                const isAnyTableSelected = Array.from(tableCheckboxes).some(cb => cb.checked);
+                // B. TABLE, DATA, VIEW: Aktif bila User DAN Tabel/View dipilih
+                const enableTablePerms = hasUserSelected && hasTableSelected;
+                toggleCheckboxes(tableStructurePermCheckboxes, enableTablePerms);
+                toggleCheckboxes(dataPermCheckboxes, enableTablePerms);
+                toggleCheckboxes(viewPermCheckboxes, enableTablePerms);
 
-                if (totalTables > 0 && (isAnyTableSelected || isAllTablesSelected)) {
-                    tablePermCheckboxes.forEach(cb => cb.disabled = false);
-                } else {
-                    tablePermCheckboxes.forEach(cb => {
-                        cb.disabled = true;
-                        cb.checked = false;
-                    });
-                }
-
-                // --- PROCEDURE / FUNCTION PERMISSIONS ---
-                const isAllProceduresSelected = allProceduresCb && allProceduresCb.checked;
-                const isAllFunctionsSelected = allFunctionsCb && allFunctionsCb.checked;
-                const isAnyRoutineSelected = Array.from(routineCheckboxes).some(cb => cb.checked);
-
-                if (totalRoutines > 0 && (isAnyRoutineSelected || isAllProceduresSelected ||
-                        isAllFunctionsSelected)) {
-                    routinePermCheckboxes.forEach(cb => cb.disabled = false);
-                } else {
-                    routinePermCheckboxes.forEach(cb => {
-                        cb.disabled = true;
-                        cb.checked = false;
-                    });
-                }
+                // C. PROCEDURE & FUNCTION: Aktif bila User DAN Routine dipilih
+                const enableRoutinePerms = hasUserSelected && hasRoutineSelected;
+                toggleCheckboxes(routinePermCheckboxes, enableRoutinePerms);
 
                 syncGroupSelectAllStates();
             }
 
-            // 7. Notifikasi Otomatis untuk CREATE ROUTINE
-            if (createRoutineCb) {
-                createRoutineCb.addEventListener('change', function() {
-                    if (this.checked) {
-                        if (noticeBox) {
-                            noticeBox.classList.remove('d-none');
-                            noticeBox.classList.add('d-flex');
-                        }
-                        if (allTablesCb && !allTablesCb.checked) {
-                            allTablesCb.checked = true;
-                            allTablesCb.dispatchEvent(new Event('change'));
-                        }
-                    } else {
-                        if (noticeBox) {
-                            noticeBox.classList.add('d-none');
-                            noticeBox.classList.remove('d-flex');
-                        }
-                    }
+            // Helper Function untuk Enable/Disable
+            function toggleCheckboxes(checkboxes, enable) {
+                checkboxes.forEach(cb => {
+                    cb.disabled = !enable;
+                    if (!enable) cb.checked = false;
                 });
             }
 
-            // 8. Logika 'Pilih Semua' per Kategori Group (FIXED)
+            // 4. Logika 'Pilih Semua' per Grup
             groupSelectAllCbs.forEach(groupCb => {
                 groupCb.addEventListener('change', function() {
                     const targetClass = this.getAttribute('data-target');
                     const childCheckboxes = document.querySelectorAll(targetClass);
-                    const isChecked = this.checked; // Kunci nilai awal sebelum loop
+                    const isChecked = this.checked;
 
-                    isBulkUpdating = true; // Kunci status sinkronisasi
-
+                    isBulkUpdating = true; // Mencegah resync bertumpuk
                     childCheckboxes.forEach(cb => {
                         if (!cb.disabled) {
                             cb.checked = isChecked;
                         }
                     });
-
-                    // Jika grup Routine, pemicu notifikasi CREATE ROUTINE
-                    if (createRoutineCb && Array.from(childCheckboxes).includes(createRoutineCb)) {
-                        createRoutineCb.dispatchEvent(new Event('change'));
-                    }
-
-                    isBulkUpdating = false; // Buka kunci status
-                    syncGroupSelectAllStates
-                        (); // Update centang header setelah seluruh anak tercentang
+                    isBulkUpdating = false;
+                    
+                    syncGroupSelectAllStates();
                 });
             });
 
-            // Helper untuk sinkronisasi status centang 'Pilih Semua'
-            function syncGroupSelectAllStates() {
-                if (isBulkUpdating) return; // Mencegah reset nilai di tengah proses loop
+            // Pastikan perubahan checkbox individual mensinkronkan header 'Pilih Semua'
+            document.querySelectorAll('.perm-checkbox').forEach(cb => {
+                cb.addEventListener('change', syncGroupSelectAllStates);
+            });
 
-                ['.data-perm', '.table-structure-perm', '.view-perm', '.routine-perm'].forEach(groupSelector => {
-                    const children = document.querySelectorAll(groupSelector);
-                    const parentGroupCb = document.querySelector(
-                        `.select-all-group[data-target="${groupSelector}"]`);
-                    if (parentGroupCb) {
+            // 5. Helper Sinkronisasi Status Checkbox 'Pilih Semua'
+            function syncGroupSelectAllStates() {
+                if (isBulkUpdating) return;
+
+                groupSelectAllCbs.forEach(parentGroupCb => {
+                    const targetClass = parentGroupCb.getAttribute('data-target');
+                    const children = document.querySelectorAll(targetClass);
+
+                    if (children.length > 0) {
                         const enabledChildren = Array.from(children).filter(c => !c.disabled);
-                        const allChecked = enabledChildren.length > 0 && enabledChildren.every(c => c
-                            .checked);
-                        const allDisabled = children.length > 0 && Array.from(children).every(c => c
-                            .disabled);
+                        const allChecked = enabledChildren.length > 0 && enabledChildren.every(c => c.checked);
+                        const allDisabled = children.length > 0 && Array.from(children).every(c => c.disabled);
 
                         parentGroupCb.disabled = allDisabled;
-                        parentGroupCb.checked = allChecked;
+                        if (allDisabled) {
+                            parentGroupCb.checked = false;
+                        } else {
+                            parentGroupCb.checked = allChecked;
+                        }
                     }
                 });
             }
 
-            // Event Listeners
-            tableCheckboxes.forEach(cb => cb.addEventListener('change', updatePermissionsState));
-            routineCheckboxes.forEach(cb => cb.addEventListener('change', updatePermissionsState));
-            permCheckboxes.forEach(cb => cb.addEventListener('change', syncGroupSelectAllStates));
+            // Jalankan saat load awal
+            updatePermissionStates();
 
-            // Initial load check
-            updatePermissionsState();
-            // Filter Live Search untuk Tabel Pilih Mahasiswa
+            // Filter Live Search untuk Tabel Mahasiswa
             const searchUserInput = document.getElementById('searchUserInput');
             if (searchUserInput) {
                 searchUserInput.addEventListener('keyup', function() {
                     const query = this.value.toLowerCase();
                     document.querySelectorAll('.user-row').forEach(row => {
-                        const nim = row.querySelector('.search-nim')?.textContent.toLowerCase() ||
-                            '';
-                        const nama = row.querySelector('.search-nama')?.textContent.toLowerCase() ||
-                            '';
-                        const user = row.querySelector('.search-user')?.textContent.toLowerCase() ||
-                            '';
+                        const nim = row.querySelector('.search-nim')?.textContent.toLowerCase() || '';
+                        const nama = row.querySelector('.search-nama')?.textContent.toLowerCase() || '';
+                        const user = row.querySelector('.search-user')?.textContent.toLowerCase() || '';
 
-                        if (nim.includes(query) || nama.includes(query) || user.includes(query)) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
+                        row.style.display = (nim.includes(query) || nama.includes(query) || user.includes(query)) ? '' : 'none';
                     });
                 });
             }
 
-            // PROTEKSI: Buka semua status disabled pada checkbox saat form disubmit agar data 'users[]' selalu terkirim
+            // PROTEKSI: Buka status disabled saat form disubmit agar nilai dapat dikirim
             const grantForm = document.querySelector('form');
             if (grantForm) {
                 grantForm.addEventListener('submit', function() {
-                    document.querySelectorAll('.user-checkbox, .perm-checkbox, .table-checkbox').forEach(
-                        cb => {
-                            cb.disabled = false;
-                        });
+                    document.querySelectorAll('input:disabled').forEach(cb => {
+                        cb.disabled = false;
+                    });
                 });
             }
         });
