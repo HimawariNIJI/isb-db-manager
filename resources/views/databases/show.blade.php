@@ -672,7 +672,7 @@
                                         </td>
                                         <td>
                                             @if ($access['table'] === '*')
-                                                <span class="fw-bold text-primary">Semua Tabel & Routine (*)</span>
+                                                <span class="fw-bold text-primary">{{ $database->mysql_database }}</span>
                                             @elseif ($type === 'PROCEDURE' || $type === 'FUNCTION')
                                                 <code>{{ $access['table'] }}()</code>
                                             @else
