@@ -91,6 +91,35 @@
                         </div>
                     </div>
 
+                    <div class="row mb-4">
+
+                        <div class="col-md-5">
+
+                            <form action="{{ route('databases.index') }}" method="GET">
+
+                                <div class="input-group">
+
+                                    <span class="input-group-text bg-white">
+                                            🔍
+                                    </span>
+
+                                    <input type="text" name="search" value="{{ request('search') }}"
+                                        class="form-control custom-input" placeholder="Cari nama database atau NIM - Mahasiswa...">
+
+                                    @if (request('search'))
+                                        <a href="{{ route('databases.index') }}" class="btn btn-outline-secondary">
+                                            ✕
+                                        </a>
+                                    @endif
+
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
                     <div class="table-responsive">
                         <table class="table custom-table align-middle">
                             <thead>
@@ -126,6 +155,55 @@
                             </tbody>
                         </table>
                     </div>
+
+                    @if ($databases->hasPages())
+
+                        <div class="student-pagination-wrapper">
+
+                            <div class="student-pagination">
+
+                                {{-- Previous --}}
+                                @if ($databases->onFirstPage())
+                                    <span class="student-pagination-box disabled">
+                                        ‹
+                                    </span>
+                                @else
+                                    <a href="{{ $databases->previousPageUrl() }}" class="student-pagination-box">
+                                        ‹
+                                    </a>
+                                @endif
+
+
+                                {{-- Page Numbers --}}
+                                @foreach ($databases->getUrlRange(1, $databases->lastPage()) as $page => $url)
+                                    @if ($page == $databases->currentPage())
+                                        <span class="student-pagination-box active">
+                                            {{ $page }}
+                                        </span>
+                                    @else
+                                        <a href="{{ $url }}" class="student-pagination-box">
+                                            {{ $page }}
+                                        </a>
+                                    @endif
+                                @endforeach
+
+
+                                {{-- Next --}}
+                                @if ($databases->hasMorePages())
+                                    <a href="{{ $databases->nextPageUrl() }}" class="student-pagination-box">
+                                        ›
+                                    </a>
+                                @else
+                                    <span class="student-pagination-box disabled">
+                                        ›
+                                    </span>
+                                @endif
+
+                            </div>
+
+                        </div>
+
+                    @endif
 
                 </div>
 

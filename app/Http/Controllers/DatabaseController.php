@@ -8,13 +8,23 @@ use Illuminate\Support\Facades\DB;
 
 class DatabaseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $databases = Student::all();
+        $query = Student::query(); 
+        $search = $request->input('search');
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('mysql_database', 'LIKE', "%{$search}%")
+                ->orWhere('nim', 'LIKE', "%{$search}%")
+                ->orWhere('nama', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $databases = $query->paginate(10)->appends(['search' => $search]); 
+
         return view('databases.index', compact('databases'));
     }
-
-
 
     public function show(Request $request, $id)
     {

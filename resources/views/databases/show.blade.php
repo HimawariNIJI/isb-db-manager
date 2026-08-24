@@ -495,8 +495,7 @@
                                             <div class="border rounded p-3 bg-light h-100">
                                                 <div
                                                     class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
-                                                    <strong class="text-uppercase text-secondary small">PROCEDURE /
-                                                        FUNCTION</strong>
+                                                    <strong class="text-uppercase text-secondary small">ROUTINE</strong>
                                                     <div class="form-check mb-0">
                                                         <input class="form-check-input select-all-group" type="checkbox"
                                                             id="selectAllRoutine" data-target=".routine-perm">
