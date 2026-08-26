@@ -697,17 +697,30 @@
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            <form action="{{ route('databases.revoke', $database->id) }}" method="POST"
-                                                onsubmit="return confirm('Apakah Anda yakin ingin mencabut akses ini?')">
-                                                @csrf
-                                                <input type="hidden" name="username" value="{{ $access['username'] }}">
-                                                <input type="hidden" name="host" value="{{ $access['host'] }}">
-                                                <input type="hidden" name="table" value="{{ $access['table'] }}">
-                                                <input type="hidden" name="type" value="{{ $type }}">
-                                                <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2">
-                                                    Cabut
+                                            <div class="d-flex justify-content-center gap-1">
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-primary py-1 px-2 btn-edit-access"
+                                                    data-nim="{{ $access['nim'] }}"
+                                                    data-student-name="{{ $access['student_name'] }}"
+                                                    data-username="{{ $access['username'] }}"
+                                                    data-host="{{ $access['host'] }}"
+                                                    data-type="{{ $type }}"
+                                                    data-target="{{ $access['table'] }}"
+                                                    data-privileges='@json($privList)'>
+                                                    Edit
                                                 </button>
-                                            </form>
+                                                <form action="{{ route('databases.revoke', $database->id) }}" method="POST"
+                                                    onsubmit="return confirm('Apakah Anda yakin ingin mencabut akses ini?')">
+                                                    @csrf
+                                                    <input type="hidden" name="username" value="{{ $access['username'] }}">
+                                                    <input type="hidden" name="host" value="{{ $access['host'] }}">
+                                                    <input type="hidden" name="table" value="{{ $access['table'] }}">
+                                                    <input type="hidden" name="type" value="{{ $type }}">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2">
+                                                        Cabut
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty
@@ -719,6 +732,274 @@
                                 @endforelse
                             </tbody>
                         </table>
+                    </div>
+
+                    <!-- Modal Edit Hak Akses -->
+                    <div class="modal fade" id="editAccessModal" tabindex="-1"
+                        aria-labelledby="editAccessModalLabel" aria-hidden="true">
+
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+
+                                <form action="{{ route('databases.update-access', $database->id) }}" method="POST">
+                                    @csrf
+
+                                    <div class="modal-header">
+                                        <div>
+                                            <h5 class="modal-title fw-bold" id="editAccessModalLabel">
+                                                Hak Akses {{ $database->mysql_database }}
+                                            </h5>
+                                            <small class="text-muted">
+                                                Edit hak akses mahasiswa
+                                            </small>
+                                        </div>
+
+                                        <button type="button" class="btn-close"
+                                            data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+
+                                        <!-- Hidden Data -->
+                                        <input type="hidden" name="username" id="editUsername">
+                                        <input type="hidden" name="host" id="editHost">
+                                        <input type="hidden" name="target" id="editTarget">
+                                        <input type="hidden" name="type" id="editType">
+
+                                        <!-- Identitas -->
+                                        <div class="border rounded p-3 mb-3 bg-light">
+
+                                            <div class="row g-3">
+
+                                                <div class="col-md-6">
+                                                    <small class="text-muted d-block">
+                                                        Identitas Mahasiswa
+                                                    </small>
+
+                                                    <strong id="editStudent">
+                                                        -
+                                                    </strong>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <small class="text-muted d-block">
+                                                        Tipe Objek
+                                                    </small>
+
+                                                    <span id="editObjectType"
+                                                        class="badge bg-secondary">
+                                                        -
+                                                    </span>
+                                                </div>
+
+                                                <div class="col-12">
+                                                    <small class="text-muted d-block">
+                                                        Nama Objek Target
+                                                    </small>
+
+                                                    <code id="editObjectTarget">
+                                                        -
+                                                    </code>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <!-- Hak Akses -->
+                                        <div>
+                                            <h6 class="fw-bold mb-2">
+                                                Hak Akses
+                                            </h6>
+
+                                            <p class="text-muted small mb-3">
+                                                Pilih hak akses yang ingin diberikan kepada mahasiswa.
+                                            </p>
+
+                                            <div class="row g-3">
+
+                                                <!-- DATABASE -->
+                                                <div class="col-md-6 edit-permission-group"
+                                                    data-type="DATABASE">
+
+                                                    <div class="border rounded p-3 h-100">
+
+                                                        <strong class="text-uppercase text-secondary small">
+                                                            DATABASE
+                                                        </strong>
+
+                                                        <hr class="my-2">
+
+                                                        <div class="form-check">
+                                                            <input class="form-check-input edit-permission"
+                                                                type="checkbox"
+                                                                name="permissions[]"
+                                                                value="CREATE"
+                                                                id="editPermCreate">
+
+                                                            <label class="form-check-label"
+                                                                for="editPermCreate">
+                                                                CREATE
+                                                            </label>
+                                                        </div>
+
+                                                        <div class="form-check">
+                                                            <input class="form-check-input edit-permission"
+                                                                type="checkbox"
+                                                                name="permissions[]"
+                                                                value="CREATE VIEW"
+                                                                id="editPermCreateView">
+
+                                                            <label class="form-check-label"
+                                                                for="editPermCreateView">
+                                                                CREATE VIEW
+                                                            </label>
+                                                        </div>
+
+                                                        <div class="form-check">
+                                                            <input class="form-check-input edit-permission"
+                                                                type="checkbox"
+                                                                name="permissions[]"
+                                                                value="CREATE ROUTINE"
+                                                                id="editPermCreateRoutine">
+
+                                                            <label class="form-check-label"
+                                                                for="editPermCreateRoutine">
+                                                                CREATE ROUTINE
+                                                            </label>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+
+                                                <!-- TABLE -->
+                                                <div class="col-md-6 edit-permission-group"
+                                                    data-type="TABLE">
+
+                                                    <div class="border rounded p-3 h-100">
+
+                                                        <strong class="text-uppercase text-secondary small">
+                                                            TABLE
+                                                        </strong>
+
+                                                        <hr class="my-2">
+
+                                                        @foreach (['ALTER', 'DROP', 'INDEX', 'REFERENCES', 'TRIGGER', 'SELECT', 'INSERT', 'UPDATE', 'DELETE'] as $permission)
+                                                            <div class="form-check">
+                                                                <input class="form-check-input edit-permission"
+                                                                    type="checkbox"
+                                                                    name="permissions[]"
+                                                                    value="{{ $permission }}"
+                                                                    id="editPerm{{ str_replace(' ', '', $permission) }}">
+
+                                                                <label class="form-check-label"
+                                                                    for="editPerm{{ str_replace(' ', '', $permission) }}">
+                                                                    {{ $permission }}
+                                                                </label>
+                                                            </div>
+                                                        @endforeach
+
+                                                    </div>
+                                                </div>
+
+
+                                                <!-- VIEW -->
+                                                <div class="col-md-6 edit-permission-group"
+                                                    data-type="VIEW">
+
+                                                    <div class="border rounded p-3 h-100">
+
+                                                        <strong class="text-uppercase text-secondary small">
+                                                            VIEW
+                                                        </strong>
+
+                                                        <hr class="my-2">
+
+                                                        <div class="form-check">
+                                                            <input class="form-check-input edit-permission"
+                                                                type="checkbox"
+                                                                name="permissions[]"
+                                                                value="SHOW VIEW"
+                                                                id="editPermShowView">
+
+                                                            <label class="form-check-label"
+                                                                for="editPermShowView">
+                                                                SHOW VIEW
+                                                            </label>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+
+                                                <!-- PROCEDURE / FUNCTION -->
+                                                <div class="col-md-6 edit-permission-group"
+                                                    data-type="ROUTINE">
+
+                                                    <div class="border rounded p-3 h-100">
+
+                                                        <strong class="text-uppercase text-secondary small">
+                                                            PROCEDURE / FUNCTION
+                                                        </strong>
+
+                                                        <hr class="my-2">
+
+                                                        <div class="form-check">
+                                                            <input class="form-check-input edit-permission"
+                                                                type="checkbox"
+                                                                name="permissions[]"
+                                                                value="ALTER ROUTINE"
+                                                                id="editPermAlterRoutine">
+
+                                                            <label class="form-check-label"
+                                                                for="editPermAlterRoutine">
+                                                                ALTER ROUTINE
+                                                            </label>
+                                                        </div>
+
+                                                        <div class="form-check">
+                                                            <input class="form-check-input edit-permission"
+                                                                type="checkbox"
+                                                                name="permissions[]"
+                                                                value="EXECUTE"
+                                                                id="editPermExecute">
+
+                                                            <label class="form-check-label"
+                                                                for="editPermExecute">
+                                                                EXECUTE
+                                                            </label>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="modal-footer">
+
+                                        <button type="button"
+                                            class="btn btn-outline-secondary"
+                                            data-bs-dismiss="modal">
+                                            Cancel
+                                        </button>
+
+                                        <button type="submit"
+                                            class="btn btn-primary">
+                                            Update Hak Akses
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -919,6 +1200,148 @@
                         cb.disabled = false;
                     });
                 });
+            }
+
+            // ==========================================
+            // EDIT ACCESS MODAL
+            // ==========================================
+
+            const editAccessModalElement = document.getElementById('editAccessModal');
+
+            if (editAccessModalElement) {
+
+                const editAccessModal = new bootstrap.Modal(editAccessModalElement);
+
+                const editDatabaseName = @json($database->mysql_database);
+
+                document.querySelectorAll('.btn-edit-access').forEach(function(button) {
+
+                    button.addEventListener('click', function() {
+
+                        // =========================
+                        // Ambil data dari tombol
+                        // =========================
+
+                        const nim = this.dataset.nim;
+                        const studentName = this.dataset.studentName;
+                        const username = this.dataset.username;
+                        const host = this.dataset.host;
+                        const type = this.dataset.type;
+                        const target = this.dataset.target;
+
+                        let privileges = [];
+
+                        try {
+                            privileges = JSON.parse(this.dataset.privileges || '[]');
+                        } catch (error) {
+                            console.error('Gagal membaca privileges:', error);
+                            privileges = [];
+                        }
+
+                        // =========================
+                        // Isi identitas mahasiswa
+                        // =========================
+
+                        document.getElementById('editStudent').textContent =
+                            nim + ' - ' + studentName;
+
+                        document.getElementById('editObjectType').textContent =
+                            type;
+
+                        // =========================
+                        // Isi target object
+                        // =========================
+
+                        if (type === 'DATABASE') {
+                            document.getElementById('editObjectTarget').textContent =
+                                editDatabaseName;
+                        } else {
+                            document.getElementById('editObjectTarget').textContent =
+                                target;
+                        }
+
+                        // =========================
+                        // Hidden input
+                        // =========================
+
+                        document.getElementById('editUsername').value = username;
+                        document.getElementById('editHost').value = host;
+                        document.getElementById('editTarget').value = target;
+                        document.getElementById('editType').value = type;
+
+                        // =========================
+                        // Reset semua checkbox
+                        // =========================
+
+                        document.querySelectorAll('.edit-permission').forEach(function(cb) {
+                            cb.checked = false;
+                        });
+
+                        // =========================
+                        // Sembunyikan semua permission group
+                        // =========================
+
+                        document.querySelectorAll('.edit-permission-group').forEach(function(group) {
+                            group.style.display = 'none';
+                        });
+
+                        // =========================
+                        // Tentukan group permission
+                        // =========================
+
+                        let groupType = type;
+
+                        if (type === 'PROCEDURE' || type === 'FUNCTION') {
+                            groupType = 'ROUTINE';
+                        }
+
+                        const activeGroup = document.querySelector(
+                            '.edit-permission-group[data-type="' + groupType + '"]'
+                        );
+
+                        if (activeGroup) {
+                            activeGroup.style.display = '';
+                        }
+
+                        // =========================
+                        // Centang privilege yang sudah aktif
+                        // =========================
+
+                        privileges.forEach(function(privilege) {
+
+                            privilege = privilege.trim();
+
+                            const checkboxes = document.querySelectorAll(
+                                '.edit-permission'
+                            );
+
+                            checkboxes.forEach(function(checkbox) {
+
+                                if (checkbox.value === privilege) {
+                                    checkbox.checked = true;
+                                }
+
+                            });
+
+                        });
+
+                        // =========================
+                        // Update judul modal
+                        // =========================
+
+                        document.getElementById('editAccessModalLabel').textContent =
+                            'Hak Akses ' + editDatabaseName;
+
+                        // =========================
+                        // Tampilkan modal
+                        // =========================
+
+                        editAccessModal.show();
+
+                    });
+
+                });
+
             }
         });
     </script>

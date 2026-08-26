@@ -346,4 +346,218 @@ class DatabaseController extends Controller
             return redirect()->back()->with('error', 'Gagal mencabut hak akses: ' . $e->getMessage());
         }
     }
+
+    public function updateAccess(Request $request, $id)
+    {
+        $request->validate([
+            'username'    => 'required|string',
+            'host'        => 'required|string',
+            'target'      => 'required|string',
+            'type'        => 'required|string',
+            'permissions' => 'required|array|min:1',
+        ], [
+            'permissions.required' =>
+                'Pilih minimal satu hak akses.',
+        ]);
+
+        $database = Student::findOrFail($id);
+
+        $dbName = trim($database->mysql_database);
+
+        $username = trim($request->username);
+        $host     = trim($request->host);
+        $target   = trim($request->target);
+        $type     = strtoupper(trim($request->type));
+
+        $permissions = $request->permissions;
+
+        // Daftar permission yang diperbolehkan
+        $globalDbPrivsAllowed = [
+            'CREATE',
+            'CREATE VIEW',
+            'CREATE ROUTINE'
+        ];
+
+        $tablePrivsAllowed = [
+            'SELECT',
+            'INSERT',
+            'UPDATE',
+            'DELETE',
+            'ALTER',
+            'DROP',
+            'INDEX',
+            'REFERENCES',
+            'TRIGGER'
+        ];
+
+        $viewPrivsAllowed = [
+            'SHOW VIEW'
+        ];
+
+        $routinePrivsAllowed = [
+            'EXECUTE',
+            'ALTER ROUTINE'
+        ];
+
+        try {
+
+            /*
+            |--------------------------------------------------------------------------
+            | 1. Cabut privilege lama pada object tersebut
+            |--------------------------------------------------------------------------
+            */
+
+            if ($target === '*' || $type === 'DATABASE') {
+
+                DB::connection('mysql_lab')->statement(
+                    "REVOKE ALL PRIVILEGES
+                    ON `{$dbName}`.*
+                    FROM '{$username}'@'{$host}'"
+                );
+
+            } elseif ($type === 'PROCEDURE') {
+
+                DB::connection('mysql_lab')->statement(
+                    "REVOKE ALL PRIVILEGES
+                    ON PROCEDURE `{$dbName}`.`{$target}`
+                    FROM '{$username}'@'{$host}'"
+                );
+
+            } elseif ($type === 'FUNCTION') {
+
+                DB::connection('mysql_lab')->statement(
+                    "REVOKE ALL PRIVILEGES
+                    ON FUNCTION `{$dbName}`.`{$target}`
+                    FROM '{$username}'@'{$host}'"
+                );
+
+            } else {
+
+                // TABLE / VIEW
+                DB::connection('mysql_lab')->statement(
+                    "REVOKE ALL PRIVILEGES
+                    ON `{$dbName}`.`{$target}`
+                    FROM '{$username}'@'{$host}'"
+                );
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 2. Berikan privilege baru
+            |--------------------------------------------------------------------------
+            */
+
+            if ($type === 'DATABASE') {
+
+                $granted = array_intersect(
+                    $permissions,
+                    $globalDbPrivsAllowed
+                );
+
+                if (!empty($granted)) {
+
+                    $privilegeString = implode(', ', $granted);
+
+                    DB::connection('mysql_lab')->statement(
+                        "GRANT {$privilegeString}
+                        ON `{$dbName}`.*
+                        TO '{$username}'@'{$host}'"
+                    );
+                }
+
+            } elseif ($type === 'TABLE') {
+
+                $granted = array_intersect(
+                    $permissions,
+                    $tablePrivsAllowed
+                );
+
+                if (!empty($granted)) {
+
+                    $privilegeString = implode(', ', $granted);
+
+                    DB::connection('mysql_lab')->statement(
+                        "GRANT {$privilegeString}
+                        ON `{$dbName}`.`{$target}`
+                        TO '{$username}'@'{$host}'"
+                    );
+                }
+
+            } elseif ($type === 'VIEW') {
+
+                $granted = array_intersect(
+                    $permissions,
+                    $viewPrivsAllowed
+                );
+
+                if (!empty($granted)) {
+
+                    $privilegeString = implode(', ', $granted);
+
+                    DB::connection('mysql_lab')->statement(
+                        "GRANT {$privilegeString}
+                        ON `{$dbName}`.`{$target}`
+                        TO '{$username}'@'{$host}'"
+                    );
+                }
+
+            } elseif ($type === 'PROCEDURE') {
+
+                $granted = array_intersect(
+                    $permissions,
+                    $routinePrivsAllowed
+                );
+
+                if (!empty($granted)) {
+
+                    $privilegeString = implode(', ', $granted);
+
+                    DB::connection('mysql_lab')->statement(
+                        "GRANT {$privilegeString}
+                        ON PROCEDURE `{$dbName}`.`{$target}`
+                        TO '{$username}'@'{$host}'"
+                    );
+                }
+
+            } elseif ($type === 'FUNCTION') {
+
+                $granted = array_intersect(
+                    $permissions,
+                    $routinePrivsAllowed
+                );
+
+                if (!empty($granted)) {
+
+                    $privilegeString = implode(', ', $granted);
+
+                    DB::connection('mysql_lab')->statement(
+                        "GRANT {$privilegeString}
+                        ON FUNCTION `{$dbName}`.`{$target}`
+                        TO '{$username}'@'{$host}'"
+                    );
+                }
+            }
+
+
+            DB::connection('mysql_lab')
+                ->statement("FLUSH PRIVILEGES;");
+
+            return redirect()
+                ->back()
+                ->with(
+                    'success',
+                    'Hak akses berhasil diperbarui.'
+                );
+
+        } catch (\Exception $e) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Gagal memperbarui hak akses: ' . $e->getMessage()
+                );
+        }
+    }
 }

@@ -84,3 +84,6 @@ Route::post('/databases/{id}/grant', [DatabaseController::class, 'grantAccess'])
 
 Route::post('/databases/{id}/revoke', [DatabaseController::class, 'revokeAccess'])
     ->name('databases.revoke');
+
+Route::post('/databases/{id}/update-access', [DatabaseController::class, 'updateAccess'])
+    ->name('databases.update-access');
