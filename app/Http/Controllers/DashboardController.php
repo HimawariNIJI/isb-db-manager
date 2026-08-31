@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\GroupDatabase;
 
 class DashboardController extends Controller
 {
@@ -14,8 +15,15 @@ class DashboardController extends Controller
 
         $totalStudents = Student::count();
 
-        $totalDatabases = Student::whereNotNull('mysql_database')
+        // Database pribadi mahasiswa
+        $personalDatabases = Student::whereNotNull('mysql_database')
             ->count();
+
+        // Database kelompok
+        $groupDatabases = GroupDatabase::count();
+
+        // Total database pribadi + kelompok
+        $totalDatabases = $personalDatabases + $groupDatabases;
 
         $todayStudents = Student::whereDate(
             'created_at',
