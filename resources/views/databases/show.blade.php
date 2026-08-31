@@ -10,7 +10,9 @@
         <aside class="sidebar">
 
             <div class="sidebar-brand">
-                <div class="brand-logo small">ISB</div>
+                <div class="brand-logo small">
+                    ISB
+                </div>
                 <div>
                     <h5>ISB DB Manager</h5>
                     <span>Database Management</span>
@@ -18,23 +20,49 @@
             </div>
 
             <nav class="sidebar-nav">
-                <a href="{{ route('dashboard') }}" class="nav-item"><span>▦</span> Dashboard</a>
-                <a href="{{ route('students.create') }}" class="nav-item"><span>＋</span> Tambah Mahasiswa</a>
-                <a href="{{ route('students.import') }}" class="nav-item"><span>⇧</span> Import CSV</a>
-                <a href="{{ route('students.index') }}" class="nav-item"><span>☷</span> Daftar Mahasiswa</a>
-                <a href="{{ route('databases.index') }}" class="nav-item active"><span>🗄</span> Manage Database</a>
+                <a href="{{ route('dashboard') }}" class="nav-item">
+                    <span>▦</span>
+                    Dashboard
+                </a>
+
+                <a href="{{ route('students.create') }}" class="nav-item">
+                    <span>＋</span>
+                    Tambah Mahasiswa
+                </a>
+
+                <a href="{{ route('group-databases.create') }}" class="nav-item">
+                    <span>👥</span>
+                    Group Database
+                </a>
+
+                <a href="{{ route('students.import') }}" class="nav-item">
+                    <span>⇧</span>
+                    Import CSV
+                </a>
+
+                <a href="{{ route('students.index') }}" class="nav-item">
+                    <span>☷</span>
+                    Daftar Mahasiswa
+                </a>
+
+                <a href="{{ route('databases.index') }}" class="nav-item active">
+                    <span>🗄</span>
+                    Manage Database
+                </a>
             </nav>
 
             <div class="sidebar-bottom">
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="nav-item logout border-0 bg-transparent w-100 text-start">
-                        <span>↪</span> Logout
+                        <span>↪</span>
+                        Logout
                     </button>
                 </form>
             </div>
 
         </aside>
+
 
         <!-- Main Content -->
         <main class="main-content">
@@ -59,7 +87,7 @@
             <div class="content-container">
 
                 <div class="mb-3">
-                    <a href="{{ route('databases.index') }}" class="btn btn-sm btn-outline-secondary">
+                    <a href="{{ route('databases.index') }}" class="btn btn-outline-primary custom-btn">
                         ← Kembali ke Daftar Database
                     </a>
                 </div>
@@ -340,25 +368,24 @@
                                                 </div>
                                                 <div class="d-flex flex-column gap-1">
                                                     <div class="form-check">
-                                                        <input
-                                                            class="form-check-input perm-checkbox database-perm"
+                                                        <input class="form-check-input perm-checkbox database-perm"
                                                             type="checkbox" name="permissions[]" value="CREATE"
                                                             id="permCreate">
                                                         <label class="form-check-label" for="permCreate">CREATE</label>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input
-                                                            class="form-check-input perm-checkbox database-perm"
+                                                        <input class="form-check-input perm-checkbox database-perm"
                                                             type="checkbox" name="permissions[]" value="CREATE VIEW"
                                                             id="permCreateView">
-                                                        <label class="form-check-label" for="permCreateView">CREATE VIEW</label>
+                                                        <label class="form-check-label" for="permCreateView">CREATE
+                                                            VIEW</label>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input
-                                                            class="form-check-input perm-checkbox database-perm"
+                                                        <input class="form-check-input perm-checkbox database-perm"
                                                             type="checkbox" name="permissions[]" value="CREATE ROUTINE"
                                                             id="permCreateRoutine">
-                                                        <label class="form-check-label" for="permCreateRoutine">CREATE ROUTINE</label>
+                                                        <label class="form-check-label" for="permCreateRoutine">CREATE
+                                                            ROUTINE</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -703,20 +730,22 @@
                                                     data-nim="{{ $access['nim'] }}"
                                                     data-student-name="{{ $access['student_name'] }}"
                                                     data-username="{{ $access['username'] }}"
-                                                    data-host="{{ $access['host'] }}"
-                                                    data-type="{{ $type }}"
+                                                    data-host="{{ $access['host'] }}" data-type="{{ $type }}"
                                                     data-target="{{ $access['table'] }}"
                                                     data-privileges='@json($privList)'>
                                                     Edit
                                                 </button>
-                                                <form action="{{ route('databases.revoke', $database->id) }}" method="POST"
+                                                <form action="{{ route('databases.revoke', $database->id) }}"
+                                                    method="POST"
                                                     onsubmit="return confirm('Apakah Anda yakin ingin mencabut akses ini?')">
                                                     @csrf
-                                                    <input type="hidden" name="username" value="{{ $access['username'] }}">
+                                                    <input type="hidden" name="username"
+                                                        value="{{ $access['username'] }}">
                                                     <input type="hidden" name="host" value="{{ $access['host'] }}">
                                                     <input type="hidden" name="table" value="{{ $access['table'] }}">
                                                     <input type="hidden" name="type" value="{{ $type }}">
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2">
+                                                    <button type="submit"
+                                                        class="btn btn-sm btn-outline-danger py-1 px-2">
                                                         Cabut
                                                     </button>
                                                 </form>
@@ -735,8 +764,8 @@
                     </div>
 
                     <!-- Modal Edit Hak Akses -->
-                    <div class="modal fade" id="editAccessModal" tabindex="-1"
-                        aria-labelledby="editAccessModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="editAccessModal" tabindex="-1" aria-labelledby="editAccessModalLabel"
+                        aria-hidden="true">
 
                         <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
@@ -754,8 +783,7 @@
                                             </small>
                                         </div>
 
-                                        <button type="button" class="btn-close"
-                                            data-bs-dismiss="modal"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
 
                                     <div class="modal-body">
@@ -786,8 +814,7 @@
                                                         Tipe Objek
                                                     </small>
 
-                                                    <span id="editObjectType"
-                                                        class="badge bg-secondary">
+                                                    <span id="editObjectType" class="badge bg-secondary">
                                                         -
                                                     </span>
                                                 </div>
@@ -820,8 +847,7 @@
                                             <div class="row g-3">
 
                                                 <!-- DATABASE -->
-                                                <div class="col-md-6 edit-permission-group"
-                                                    data-type="DATABASE">
+                                                <div class="col-md-6 edit-permission-group" data-type="DATABASE">
 
                                                     <div class="border rounded p-3 h-100">
 
@@ -833,39 +859,30 @@
 
                                                         <div class="form-check">
                                                             <input class="form-check-input edit-permission"
-                                                                type="checkbox"
-                                                                name="permissions[]"
-                                                                value="CREATE"
+                                                                type="checkbox" name="permissions[]" value="CREATE"
                                                                 id="editPermCreate">
 
-                                                            <label class="form-check-label"
-                                                                for="editPermCreate">
+                                                            <label class="form-check-label" for="editPermCreate">
                                                                 CREATE
                                                             </label>
                                                         </div>
 
                                                         <div class="form-check">
                                                             <input class="form-check-input edit-permission"
-                                                                type="checkbox"
-                                                                name="permissions[]"
-                                                                value="CREATE VIEW"
+                                                                type="checkbox" name="permissions[]" value="CREATE VIEW"
                                                                 id="editPermCreateView">
 
-                                                            <label class="form-check-label"
-                                                                for="editPermCreateView">
+                                                            <label class="form-check-label" for="editPermCreateView">
                                                                 CREATE VIEW
                                                             </label>
                                                         </div>
 
                                                         <div class="form-check">
                                                             <input class="form-check-input edit-permission"
-                                                                type="checkbox"
-                                                                name="permissions[]"
-                                                                value="CREATE ROUTINE"
-                                                                id="editPermCreateRoutine">
+                                                                type="checkbox" name="permissions[]"
+                                                                value="CREATE ROUTINE" id="editPermCreateRoutine">
 
-                                                            <label class="form-check-label"
-                                                                for="editPermCreateRoutine">
+                                                            <label class="form-check-label" for="editPermCreateRoutine">
                                                                 CREATE ROUTINE
                                                             </label>
                                                         </div>
@@ -875,8 +892,7 @@
 
 
                                                 <!-- TABLE -->
-                                                <div class="col-md-6 edit-permission-group"
-                                                    data-type="TABLE">
+                                                <div class="col-md-6 edit-permission-group" data-type="TABLE">
 
                                                     <div class="border rounded p-3 h-100">
 
@@ -889,8 +905,7 @@
                                                         @foreach (['ALTER', 'DROP', 'INDEX', 'REFERENCES', 'TRIGGER', 'SELECT', 'INSERT', 'UPDATE', 'DELETE'] as $permission)
                                                             <div class="form-check">
                                                                 <input class="form-check-input edit-permission"
-                                                                    type="checkbox"
-                                                                    name="permissions[]"
+                                                                    type="checkbox" name="permissions[]"
                                                                     value="{{ $permission }}"
                                                                     id="editPerm{{ str_replace(' ', '', $permission) }}">
 
@@ -906,8 +921,7 @@
 
 
                                                 <!-- VIEW -->
-                                                <div class="col-md-6 edit-permission-group"
-                                                    data-type="VIEW">
+                                                <div class="col-md-6 edit-permission-group" data-type="VIEW">
 
                                                     <div class="border rounded p-3 h-100">
 
@@ -919,13 +933,10 @@
 
                                                         <div class="form-check">
                                                             <input class="form-check-input edit-permission"
-                                                                type="checkbox"
-                                                                name="permissions[]"
-                                                                value="SHOW VIEW"
+                                                                type="checkbox" name="permissions[]" value="SHOW VIEW"
                                                                 id="editPermShowView">
 
-                                                            <label class="form-check-label"
-                                                                for="editPermShowView">
+                                                            <label class="form-check-label" for="editPermShowView">
                                                                 SHOW VIEW
                                                             </label>
                                                         </div>
@@ -935,8 +946,7 @@
 
 
                                                 <!-- PROCEDURE / FUNCTION -->
-                                                <div class="col-md-6 edit-permission-group"
-                                                    data-type="ROUTINE">
+                                                <div class="col-md-6 edit-permission-group" data-type="ROUTINE">
 
                                                     <div class="border rounded p-3 h-100">
 
@@ -948,26 +958,20 @@
 
                                                         <div class="form-check">
                                                             <input class="form-check-input edit-permission"
-                                                                type="checkbox"
-                                                                name="permissions[]"
-                                                                value="ALTER ROUTINE"
-                                                                id="editPermAlterRoutine">
+                                                                type="checkbox" name="permissions[]"
+                                                                value="ALTER ROUTINE" id="editPermAlterRoutine">
 
-                                                            <label class="form-check-label"
-                                                                for="editPermAlterRoutine">
+                                                            <label class="form-check-label" for="editPermAlterRoutine">
                                                                 ALTER ROUTINE
                                                             </label>
                                                         </div>
 
                                                         <div class="form-check">
                                                             <input class="form-check-input edit-permission"
-                                                                type="checkbox"
-                                                                name="permissions[]"
-                                                                value="EXECUTE"
+                                                                type="checkbox" name="permissions[]" value="EXECUTE"
                                                                 id="editPermExecute">
 
-                                                            <label class="form-check-label"
-                                                                for="editPermExecute">
+                                                            <label class="form-check-label" for="editPermExecute">
                                                                 EXECUTE
                                                             </label>
                                                         </div>
@@ -983,14 +987,11 @@
 
                                     <div class="modal-footer">
 
-                                        <button type="button"
-                                            class="btn btn-outline-secondary"
-                                            data-bs-dismiss="modal">
+                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                                             Cancel
                                         </button>
 
-                                        <button type="submit"
-                                            class="btn btn-primary">
+                                        <button type="submit" class="btn btn-primary">
                                             Update Hak Akses
                                         </button>
 
@@ -1094,14 +1095,14 @@
             // 3. Logika Inti: Menghidupkan/Mematikan (Enable/Disable) Checkbox Hak Akses
             function updatePermissionStates() {
                 const hasUserSelected = Array.from(userCheckboxes).some(cb => cb.checked);
-                
-                const hasTableSelected = (allTablesCb && allTablesCb.checked) || 
-                                        Array.from(tableCheckboxes).some(cb => cb.checked);
-                                        
+
+                const hasTableSelected = (allTablesCb && allTablesCb.checked) ||
+                    Array.from(tableCheckboxes).some(cb => cb.checked);
+
                 const hasRoutineSelected = (allProceduresCb && allProceduresCb.checked) ||
-                                        (allFunctionsCb && allFunctionsCb.checked) ||
-                                        Array.from(procedureCheckboxes).some(cb => cb.checked) ||
-                                        Array.from(functionCheckboxes).some(cb => cb.checked);
+                    (allFunctionsCb && allFunctionsCb.checked) ||
+                    Array.from(procedureCheckboxes).some(cb => cb.checked) ||
+                    Array.from(functionCheckboxes).some(cb => cb.checked);
 
                 // A. DATABASE: Aktif selama ada User yang dipilih
                 toggleCheckboxes(databasePermCheckboxes, hasUserSelected);
@@ -1141,7 +1142,7 @@
                         }
                     });
                     isBulkUpdating = false;
-                    
+
                     syncGroupSelectAllStates();
                 });
             });
@@ -1161,8 +1162,10 @@
 
                     if (children.length > 0) {
                         const enabledChildren = Array.from(children).filter(c => !c.disabled);
-                        const allChecked = enabledChildren.length > 0 && enabledChildren.every(c => c.checked);
-                        const allDisabled = children.length > 0 && Array.from(children).every(c => c.disabled);
+                        const allChecked = enabledChildren.length > 0 && enabledChildren.every(c => c
+                            .checked);
+                        const allDisabled = children.length > 0 && Array.from(children).every(c => c
+                            .disabled);
 
                         parentGroupCb.disabled = allDisabled;
                         if (allDisabled) {
@@ -1183,11 +1186,15 @@
                 searchUserInput.addEventListener('keyup', function() {
                     const query = this.value.toLowerCase();
                     document.querySelectorAll('.user-row').forEach(row => {
-                        const nim = row.querySelector('.search-nim')?.textContent.toLowerCase() || '';
-                        const nama = row.querySelector('.search-nama')?.textContent.toLowerCase() || '';
-                        const user = row.querySelector('.search-user')?.textContent.toLowerCase() || '';
+                        const nim = row.querySelector('.search-nim')?.textContent.toLowerCase() ||
+                            '';
+                        const nama = row.querySelector('.search-nama')?.textContent.toLowerCase() ||
+                            '';
+                        const user = row.querySelector('.search-user')?.textContent.toLowerCase() ||
+                            '';
 
-                        row.style.display = (nim.includes(query) || nama.includes(query) || user.includes(query)) ? '' : 'none';
+                        row.style.display = (nim.includes(query) || nama.includes(query) || user
+                            .includes(query)) ? '' : 'none';
                     });
                 });
             }
@@ -1281,7 +1288,8 @@
                         // Sembunyikan semua permission group
                         // =========================
 
-                        document.querySelectorAll('.edit-permission-group').forEach(function(group) {
+                        document.querySelectorAll('.edit-permission-group').forEach(function(
+                            group) {
                             group.style.display = 'none';
                         });
 

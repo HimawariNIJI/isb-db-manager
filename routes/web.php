@@ -3,6 +3,8 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\DatabaseController;
+use App\Http\Controllers\GroupDatabaseController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -71,8 +73,6 @@ Route::put('/students/{student}/password', [StudentController::class, 'updatePas
 // Database Management
 // =========================
 
-use App\Http\Controllers\DatabaseController;
-
 Route::get('/databases', [DatabaseController::class, 'index'])
     ->name('databases.index');
 
@@ -87,3 +87,12 @@ Route::post('/databases/{id}/revoke', [DatabaseController::class, 'revokeAccess'
 
 Route::post('/databases/{id}/update-access', [DatabaseController::class, 'updateAccess'])
     ->name('databases.update-access');
+
+Route::get('/group-databases/create', [GroupDatabaseController::class, 'create'])
+    ->name('group-databases.create');
+
+Route::post('/group-databases', [GroupDatabaseController::class, 'store'])
+    ->name('group-databases.store');
+
+Route::delete('/group-databases/{id}', [GroupDatabaseController::class, 'destroy'])
+    ->name('group-databases.destroy');

@@ -10,20 +10,16 @@
         <aside class="sidebar">
 
             <div class="sidebar-brand">
-
                 <div class="brand-logo small">
                     ISB
                 </div>
-
                 <div>
                     <h5>ISB DB Manager</h5>
                     <span>Database Management</span>
                 </div>
-
             </div>
 
             <nav class="sidebar-nav">
-
                 <a href="{{ route('dashboard') }}" class="nav-item active">
                     <span>▦</span>
                     Dashboard
@@ -32,6 +28,11 @@
                 <a href="{{ route('students.create') }}" class="nav-item">
                     <span>＋</span>
                     Tambah Mahasiswa
+                </a>
+
+                <a href="{{ route('group-databases.create') }}" class="nav-item">
+                    <span>👥</span>
+                    Group Database
                 </a>
 
                 <a href="{{ route('students.import') }}" class="nav-item">
@@ -48,7 +49,6 @@
                     <span>🗄</span>
                     Manage Database
                 </a>
-
             </nav>
 
             <div class="sidebar-bottom">

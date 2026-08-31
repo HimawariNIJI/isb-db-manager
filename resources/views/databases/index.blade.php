@@ -30,6 +30,11 @@
                     Tambah Mahasiswa
                 </a>
 
+                <a href="{{ route('group-databases.create') }}" class="nav-item">
+                    <span>👥</span>
+                    Group Database
+                </a>
+
                 <a href="{{ route('students.import') }}" class="nav-item">
                     <span>⇧</span>
                     Import CSV
@@ -100,11 +105,12 @@
                                 <div class="input-group">
 
                                     <span class="input-group-text bg-white">
-                                            🔍
+                                        🔍
                                     </span>
 
                                     <input type="text" name="search" value="{{ request('search') }}"
-                                        class="form-control custom-input" placeholder="Cari nama database atau NIM - Mahasiswa...">
+                                        class="form-control custom-input"
+                                        placeholder="Cari nama database atau NIM - Mahasiswa...">
 
                                     @if (request('search'))
                                         <a href="{{ route('databases.index') }}" class="btn btn-outline-secondary">
