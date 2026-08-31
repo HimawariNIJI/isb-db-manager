@@ -371,54 +371,121 @@
     <!-- Live Search Scripts -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Search Mahasiswa (Form Atas)
+
             const searchStudentInput = document.getElementById('searchStudent');
             const selectAllCheckbox = document.getElementById('selectAll');
             const studentTableRows = document.querySelectorAll('#studentTable tbody tr');
 
+            // Ambil semua checkbox mahasiswa yang sedang terlihat
+            function getVisibleStudentCheckboxes() {
+                return Array.from(
+                    document.querySelectorAll('#studentTable tbody .student-checkbox')
+                ).filter(checkbox => {
+                    const row = checkbox.closest('tr');
+                    return row && row.style.display !== 'none';
+                });
+            }
+
+            // Update checkbox "Select All"
+            function updateSelectAllState() {
+                const checkboxes = getVisibleStudentCheckboxes();
+
+                if (checkboxes.length === 0) {
+                    selectAllCheckbox.checked = false;
+                    return;
+                }
+
+                // TRUE hanya jika SEMUA checkbox dicentang
+                const allChecked = checkboxes.every(
+                    checkbox => checkbox.checked
+                );
+
+                selectAllCheckbox.checked = allChecked;
+            }
+
+            // ==========================
+            // SEARCH MAHASISWA
+            // ==========================
             if (searchStudentInput) {
                 searchStudentInput.addEventListener('keyup', function() {
                     const filter = this.value.toLowerCase();
+
                     studentTableRows.forEach(row => {
                         const text = row.innerText.toLowerCase();
-                        row.style.display = text.includes(filter) ? '' : 'none';
+
+                        row.style.display = text.includes(filter)
+                            ? ''
+                            : 'none';
                     });
+
+                    updateSelectAllState();
                 });
             }
 
+            // ==========================
+            // SELECT ALL
+            // ==========================
             if (selectAllCheckbox) {
                 selectAllCheckbox.addEventListener('change', function() {
                     const isChecked = this.checked;
-                    studentTableRows.forEach(row => {
-                        if (row.style.display !== 'none') {
-                            const checkbox = row.querySelector('.student-checkbox');
-                            if (checkbox) checkbox.checked = isChecked;
-                        }
+
+                    getVisibleStudentCheckboxes().forEach(checkbox => {
+                        checkbox.checked = isChecked;
                     });
                 });
             }
 
-            // Search Database Kelompok (Tabel Bawah)
+            // ==========================
+            // CHECKBOX INDIVIDUAL
+            // ==========================
+            const studentCheckboxes = document.querySelectorAll(
+                '#studentTable tbody .student-checkbox'
+            );
+
+            studentCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    updateSelectAllState();
+                });
+            });
+
+            // ==========================
+            // INITIAL STATE
+            // ==========================
+            updateSelectAllState();
+
+
+            // ==========================
+            // SEARCH GROUP DATABASE
+            // ==========================
             const searchGroupDbInput = document.getElementById('searchGroupDb');
-            const groupDbRows = document.querySelectorAll('#groupDbTable tbody tr.group-db-row');
+            const groupDbRows = document.querySelectorAll(
+                '#groupDbTable tbody tr.group-db-row'
+            );
 
             if (searchGroupDbInput) {
                 searchGroupDbInput.addEventListener('keyup', function() {
                     const filter = this.value.toLowerCase();
+
                     groupDbRows.forEach(row => {
                         const text = row.innerText.toLowerCase();
                         const nextCollapseRow = row.nextElementSibling;
+
                         if (text.includes(filter)) {
                             row.style.display = '';
                         } else {
                             row.style.display = 'none';
-                            if (nextCollapseRow && nextCollapseRow.classList.contains('collapse')) {
+
+                            if (
+                                nextCollapseRow &&
+                                nextCollapseRow.classList.contains('collapse')
+                            ) {
                                 nextCollapseRow.classList.remove('show');
                             }
                         }
                     });
                 });
             }
+
         });
     </script>
 

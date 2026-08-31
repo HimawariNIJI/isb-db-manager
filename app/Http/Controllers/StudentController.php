@@ -361,8 +361,14 @@ class StudentController extends Controller
             $headers
         );
     }
+    
     public function import(Request $request)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDASI FILE
+        |--------------------------------------------------------------------------
+        */
 
         $request->validate([
             'csv_file' => [
@@ -372,6 +378,7 @@ class StudentController extends Controller
                 'max:2048',
             ],
         ]);
+
 
         $file = $request->file('csv_file');
 
@@ -388,7 +395,7 @@ class StudentController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | Ambil header
+            | AMBIL HEADER
             |--------------------------------------------------------------------------
             */
 
@@ -406,19 +413,34 @@ class StudentController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | Normalisasi header
+            | NORMALISASI HEADER
             |--------------------------------------------------------------------------
             */
 
             $header = array_map(function ($value) {
 
                 // Hapus UTF-8 BOM
-                $value = preg_replace('/^\xEF\xBB\xBF/', '', $value);
+                $value = preg_replace(
+                    '/^\xEF\xBB\xBF/',
+                    '',
+                    $value
+                );
 
+                // Hapus tanda kutip " jika masih terbaca
+                $value = trim($value, " \t\n\r\0\x0B\"");
+
+                // Normalisasi huruf menjadi lowercase
                 return strtolower(trim($value));
+
             }, $header);
 
-            $expectedHeader = [
+            /*
+            |--------------------------------------------------------------------------
+            | HEADER YANG DIDUKUNG
+            |--------------------------------------------------------------------------
+            */
+
+            $webHeader = [
                 'nim',
                 'nama',
                 'email',
@@ -426,36 +448,76 @@ class StudentController extends Controller
             ];
 
 
-            if ($header !== $expectedHeader) {
+            $elearnHeader = [
+                'first name',
+                'last name',
+                'email address',
+                'groups',
+            ];
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | DETEKSI FORMAT
+            |--------------------------------------------------------------------------
+            */
+
+            if ($header === $webHeader) {
+
+                $csvFormat = 'web';
+
+            } elseif ($header === $elearnHeader) {
+
+                $csvFormat = 'elearn';
+
+            } else {
 
                 fclose($handle);
 
                 return back()->with(
                     'error',
-                    'Format CSV tidak sesuai. Gunakan nim,nama,email,kelas.'
+                    'Format CSV tidak sesuai. Gunakan CSV Web atau CSV eLearn.'
                 );
             }
 
+            /*
+            |--------------------------------------------------------------------------
+            | COUNTER
+            |--------------------------------------------------------------------------
+            */
 
             $successCount = 0;
+            $skippedCount = 0;
             $errors = [];
 
 
             /*
             |--------------------------------------------------------------------------
-            | Proses setiap mahasiswa
+            | PROCESS SETIAP ROW
             |--------------------------------------------------------------------------
             */
 
             while (($row = fgetcsv($handle)) !== false) {
 
-                // Lewati baris kosong
+                /*
+                |--------------------------------------------------------------------------
+                | Lewati baris kosong
+                |--------------------------------------------------------------------------
+                */
+
                 if (
                     count($row) === 1 &&
                     trim($row[0]) === ''
                 ) {
                     continue;
                 }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Pastikan 4 kolom
+                |--------------------------------------------------------------------------
+                */
 
                 if (count($row) < 4) {
 
@@ -466,15 +528,70 @@ class StudentController extends Controller
                 }
 
 
-                $nim = trim($row[0]);
-                $nama = trim($row[1]);
-                $email = trim($row[2]);
-                $kelas = trim($row[3]);
+                /*
+                |--------------------------------------------------------------------------
+                | MAPPING DATA
+                |--------------------------------------------------------------------------
+                */
+
+                if ($csvFormat === 'web') {
+
+                    /*
+                    | nim,nama,email,kelas
+                    */
+
+                    $nim = trim($row[0]);
+                    $nama = trim($row[1]);
+                    $email = trim($row[2]);
+                    $kelas = trim($row[3]);
+
+                } else {
+
+                    /*
+                    | First name = NIM
+                    | Last name = Nama
+                    | Email address = Email
+                    | Groups = DIABAIKAN
+                    */
+
+                    $nim = trim($row[0]);
+                    $nama = trim($row[1]);
+                    $email = trim($row[2]);
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | SKIP DOSEN
+                    |--------------------------------------------------------------------------
+                    |
+                    | Mahasiswa memiliki NIM berupa angka.
+                    |
+                    | Dosen:
+                    | "Kartika Gianina Tileng","S.E., M.Cs.",...
+                    |
+                    | First name bukan angka → SKIP
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (!preg_match('/^\d+$/', $nim)) {
+
+                        $skippedCount++;
+
+                        continue;
+                    }
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | eLearn tidak memiliki kelas
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $kelas = null;
+                }
 
 
                 /*
                 |--------------------------------------------------------------------------
-                | Validasi
+                | VALIDASI DATA
                 |--------------------------------------------------------------------------
                 */
 
@@ -489,14 +606,19 @@ class StudentController extends Controller
 
                 /*
                 |--------------------------------------------------------------------------
-                | Cek NIM sudah ada di Laravel
+                | CEK NIM SUDAH ADA
                 |--------------------------------------------------------------------------
                 */
 
                 if (Student::where('nim', $nim)->exists()) {
 
-                    $errors[] =
-                        "NIM {$nim} sudah terdaftar.";
+                    /*
+                    | Sudah ada → SKIP
+                    | Tidak membuat database baru
+                    | Tidak membuat user baru
+                    */
+
+                    $skippedCount++;
 
                     continue;
                 }
@@ -504,12 +626,13 @@ class StudentController extends Controller
 
                 /*
                 |--------------------------------------------------------------------------
-                | Prepare MySQL data
+                | PREPARE MYSQL
                 |--------------------------------------------------------------------------
                 */
 
                 $databaseName =
                     'student_' . $nim;
+
 
                 $safeDatabaseName =
                     preg_replace(
@@ -518,18 +641,14 @@ class StudentController extends Controller
                         $databaseName
                     );
 
+
                 $mysqlUsername =
                     $nim;
+
 
                 $mysqlPassword =
                     Str::random(12);
 
-
-                /*
-                |--------------------------------------------------------------------------
-                | Initialize variables
-                |--------------------------------------------------------------------------
-                */
 
                 $mysql = null;
 
@@ -542,13 +661,16 @@ class StudentController extends Controller
 
                     /*
                     |--------------------------------------------------------------------------
-                    | Koneksi MySQL Lab
+                    | CONNECT MYSQL LAB
                     |--------------------------------------------------------------------------
                     */
 
-                    $mysql = DB::connection('mysql_lab');
+                    $mysql =
+                        DB::connection('mysql_lab');
 
-                    $pdo = $mysql->getPdo();
+                    $pdo =
+                        $mysql->getPdo();
+
 
                     /*
                     |--------------------------------------------------------------------------
@@ -557,7 +679,7 @@ class StudentController extends Controller
                     */
 
                     $mysql->statement(
-                        "CREATE DATABASE `$safeDatabaseName`"
+                        "CREATE DATABASE `{$safeDatabaseName}`"
                     );
 
                     $databaseCreated = true;
@@ -565,36 +687,47 @@ class StudentController extends Controller
 
                     /*
                     |--------------------------------------------------------------------------
-                    | CREATE USER
+                    | CREATE MYSQL USER
                     |--------------------------------------------------------------------------
                     */
 
-                    $quotedUsername = $pdo->quote($mysqlUsername);
-                    $quotedPassword = $pdo->quote($mysqlPassword);
+                    $quotedUsername =
+                        $pdo->quote($mysqlUsername);
+
+                    $quotedPassword =
+                        $pdo->quote($mysqlPassword);
+
 
                     $createUserSql =
-                        "CREATE USER {$quotedUsername}@'%' IDENTIFIED BY {$quotedPassword}";
+                        "CREATE USER {$quotedUsername}@'%' 
+                        IDENTIFIED BY {$quotedPassword}";
 
-                    $mysql->statement($createUserSql);
+
+                    $mysql->statement(
+                        $createUserSql
+                    );
+
 
                     $userCreated = true;
 
+
                     /*
                     |--------------------------------------------------------------------------
-                    | GRANT ACCESS
+                    | GRANT PRIVILEGES
                     |--------------------------------------------------------------------------
                     */
 
                     $mysql->statement(
                         "GRANT ALL PRIVILEGES
-                        ON `$safeDatabaseName`.*
-                        TO {$quotedUsername}@'%' WITH GRANT OPTION"
+                        ON `{$safeDatabaseName}`.*
+                        TO {$quotedUsername}@'%'
+                        WITH GRANT OPTION"
                     );
 
 
                     /*
                     |--------------------------------------------------------------------------
-                    | FLUSH PRIVILEGES
+                    | FLUSH
                     |--------------------------------------------------------------------------
                     */
 
@@ -605,49 +738,58 @@ class StudentController extends Controller
 
                     /*
                     |--------------------------------------------------------------------------
-                    | Simpan ke database Laravel
+                    | SIMPAN STUDENT
                     |--------------------------------------------------------------------------
                     */
 
                     Student::create([
+
                         'nim' =>
-                        $nim,
+                            $nim,
 
                         'nama' =>
-                        $nama,
+                            $nama,
 
                         'email' =>
-                        $email ?: null,
+                            $email ?: null,
 
                         'kelas' =>
-                        $kelas ?: null,
+                            $kelas ?: null,
 
                         'mysql_database' =>
-                        $safeDatabaseName,
+                            $safeDatabaseName,
 
                         'mysql_username' =>
-                        $mysqlUsername,
+                            $mysqlUsername,
 
                         'mysql_password' =>
-                        $mysqlPassword,
+                            $mysqlPassword,
+
                     ]);
 
 
+                    /*
+                    |--------------------------------------------------------------------------
+                    | SUCCESS
+                    |--------------------------------------------------------------------------
+                    */
+
                     $successCount++;
+
+
                 } catch (\Throwable $e) {
 
                     /*
                     |--------------------------------------------------------------------------
-                    | Cleanup jika proses gagal
+                    | CLEANUP
                     |--------------------------------------------------------------------------
                     */
 
                     if ($mysql !== null) {
 
+
                         /*
-                        |------------------------------------------------------------------
-                        | Hapus user MySQL jika sudah dibuat
-                        |------------------------------------------------------------------
+                        | Hapus USER
                         */
 
                         if ($userCreated) {
@@ -655,22 +797,24 @@ class StudentController extends Controller
                             try {
 
                                 $quotedUsername =
-                                    $mysql->getPdo()->quote($mysqlUsername);
+                                    $mysql
+                                        ->getPdo()
+                                        ->quote($mysqlUsername);
+
 
                                 $mysql->statement(
                                     "DROP USER IF EXISTS {$quotedUsername}@'%'"
                                 );
+
                             } catch (\Throwable $cleanupException) {
 
-                                // Abaikan error cleanup
+                                // Abaikan cleanup error
                             }
                         }
 
 
                         /*
-                        |------------------------------------------------------------------
-                        | Hapus database jika sudah dibuat
-                        |------------------------------------------------------------------
+                        | Hapus DATABASE
                         */
 
                         if ($databaseCreated) {
@@ -678,19 +822,21 @@ class StudentController extends Controller
                             try {
 
                                 $mysql->statement(
-                                    "DROP DATABASE IF EXISTS `$safeDatabaseName`"
+                                    "DROP DATABASE IF EXISTS `{$safeDatabaseName}`"
                                 );
+
                             } catch (\Throwable $cleanupException) {
 
-                                // Abaikan error cleanup
+                                // Abaikan cleanup error
                             }
                         }
+
                     }
 
 
                     /*
                     |--------------------------------------------------------------------------
-                    | Simpan error
+                    | SIMPAN ERROR
                     |--------------------------------------------------------------------------
                     */
 
@@ -700,12 +846,18 @@ class StudentController extends Controller
             }
 
 
+            /*
+            |--------------------------------------------------------------------------
+            | CLOSE CSV
+            |--------------------------------------------------------------------------
+            */
+
             fclose($handle);
 
 
             /*
             |--------------------------------------------------------------------------
-            | Hasil
+            | HASIL IMPORT
             |--------------------------------------------------------------------------
             */
 
@@ -714,14 +866,24 @@ class StudentController extends Controller
                 return back()
                     ->with(
                         'error',
-                        'Tidak ada mahasiswa yang berhasil diimport.'
+                        'Tidak ada mahasiswa baru yang berhasil diimport.'
                     )
                     ->with(
                         'import_errors',
                         $errors
+                    )
+                    ->with(
+                        'skipped_count',
+                        $skippedCount
                     );
             }
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | REDIRECT KE DAFTAR MAHASISWA
+            |--------------------------------------------------------------------------
+            */
 
             return redirect()
                 ->route('students.index')
@@ -732,10 +894,31 @@ class StudentController extends Controller
                 ->with(
                     'import_errors',
                     $errors
+                )
+                ->with(
+                    'skipped_count',
+                    $skippedCount
                 );
-        } catch (\Exception $e) {
 
-            fclose($handle);
+
+        } catch (\Throwable $e) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | CLOSE FILE
+            |--------------------------------------------------------------------------
+            */
+
+            if (is_resource($handle)) {
+                fclose($handle);
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | ERROR
+            |--------------------------------------------------------------------------
+            */
 
             return back()->with(
                 'error',
@@ -743,6 +926,7 @@ class StudentController extends Controller
             );
         }
     }
+
     public function create()
     {
         return view('students.create');
