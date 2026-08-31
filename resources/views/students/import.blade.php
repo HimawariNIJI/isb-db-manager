@@ -501,16 +501,11 @@
             const reader =
                 new FileReader();
 
-
             reader.onload = function(event) {
 
-                const text =
-                    event.target.result;
+                const text = event.target.result;
 
-
-                const rows =
-                    parseCSV(text);
-
+                const rows = parseCSV(text);
 
                 /*
                 |--------------------------------------------------------------------------
@@ -520,11 +515,71 @@
 
                 if (rows.length <= 1) {
 
-                    previewSection.style.display =
-                        'none';
+                    previewSection.style.display = 'none';
 
                     alert(
                         'File CSV tidak memiliki data mahasiswa.'
+                    );
+
+                    return;
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | DETEKSI FORMAT CSV
+                |--------------------------------------------------------------------------
+                */
+
+                const header = rows[0].map(function(value) {
+
+                    return value
+                        .replace(/^\uFEFF/, '')
+                        .trim()
+                        .toLowerCase();
+
+                });
+
+
+                const webHeader = [
+                    'nim',
+                    'nama',
+                    'email',
+                    'kelas'
+                ];
+
+
+                const elearnHeader = [
+                    'first name',
+                    'last name',
+                    'email address',
+                    'groups'
+                ];
+
+
+                let csvFormat = null;
+
+
+                if (
+                    JSON.stringify(header) ===
+                    JSON.stringify(webHeader)
+                ) {
+
+                    csvFormat = 'web';
+
+                } else if (
+                    JSON.stringify(header) ===
+                    JSON.stringify(elearnHeader)
+                ) {
+
+                    csvFormat = 'elearn';
+
+                } else {
+
+                    previewSection.style.display = 'none';
+
+                    alert(
+                        'Format CSV tidak sesuai. Gunakan CSV dari Web atau eLearn.'
                     );
 
                     return;
@@ -537,8 +592,7 @@
                 |--------------------------------------------------------------------------
                 */
 
-                previewTableBody.innerHTML =
-                    '';
+                previewTableBody.innerHTML = '';
 
 
                 /*
@@ -547,23 +601,27 @@
                 |--------------------------------------------------------------------------
                 */
 
-                const dataRows =
-                    rows.slice(1);
+                const dataRows = rows.slice(1);
 
 
-                let validRows =
-                    0;
+                let validRows = 0;
+                let skippedLecturers = 0;
 
 
                 /*
                 |--------------------------------------------------------------------------
-                | CREATE TABLE ROW
+                | PROCESS ROW
                 |--------------------------------------------------------------------------
                 */
 
                 dataRows.forEach(function(row) {
 
-                    // Lewati baris kosong
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Lewati baris kosong
+                    |--------------------------------------------------------------------------
+                    */
+
                     if (
                         row.length === 1 &&
                         row[0].trim() === ''
@@ -572,12 +630,125 @@
                     }
 
 
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Pastikan minimal 4 kolom
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (row.length < 4) {
+                        return;
+                    }
+
+
+                    let nim;
+                    let nama;
+                    let email;
+                    let kelas;
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | FORMAT WEB
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (csvFormat === 'web') {
+
+                        nim =
+                            row[0]?.trim() || '';
+
+                        nama =
+                            row[1]?.trim() || '';
+
+                        email =
+                            row[2]?.trim() || '';
+
+                        kelas =
+                            row[3]?.trim() || '';
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | FORMAT ELEARN
+                    |--------------------------------------------------------------------------
+                    */
+
+                    else {
+
+                        nim =
+                            row[0]?.trim() || '';
+
+                        nama =
+                            row[1]?.trim() || '';
+
+                        email =
+                            row[2]?.trim() || '';
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | CEK DOSEN
+                        |
+                        | Mahasiswa:
+                        | First name = NIM berupa angka
+                        |
+                        | Dosen:
+                        | First name = Nama
+                        |--------------------------------------------------------------------------
+                        */
+
+                        if (!/^\d+$/.test(nim)) {
+
+                            skippedLecturers++;
+
+                            return;
+                        }
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | Groups DIABAIKAN
+                        |--------------------------------------------------------------------------
+                        |
+                        | eLearn tidak digunakan untuk menentukan kelas.
+                        |
+                        */
+
+                        kelas = '';
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | VALIDASI NIM & NAMA
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (
+                        nim === '' ||
+                        nama === ''
+                    ) {
+                        return;
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | CREATE TABLE ROW
+                    |--------------------------------------------------------------------------
+                    */
+
                     const tr =
                         document.createElement('tr');
 
 
                     /*
-                    | No
+                    |--------------------------------------------------------------------------
+                    | NO
+                    |--------------------------------------------------------------------------
                     */
 
                     const no =
@@ -588,66 +759,78 @@
 
 
                     /*
+                    |--------------------------------------------------------------------------
                     | NIM
+                    |--------------------------------------------------------------------------
                     */
 
-                    const nim =
+                    const nimCell =
                         document.createElement('td');
 
-                    nim.textContent =
-                        row[0]?.trim() || '-';
+                    nimCell.textContent =
+                        nim;
 
 
                     /*
-                    | Nama
+                    |--------------------------------------------------------------------------
+                    | NAMA
+                    |--------------------------------------------------------------------------
                     */
 
-                    const nama =
+                    const namaCell =
                         document.createElement('td');
 
-                    nama.textContent =
-                        row[1]?.trim() || '-';
+                    namaCell.textContent =
+                        nama;
 
 
                     /*
-                    | Email
+                    |--------------------------------------------------------------------------
+                    | EMAIL
+                    |--------------------------------------------------------------------------
                     */
 
-                    const email =
+                    const emailCell =
                         document.createElement('td');
 
-                    email.textContent =
-                        row[2]?.trim() || '-';
+                    emailCell.textContent =
+                        email || '-';
 
 
                     /*
-                    | Kelas
+                    |--------------------------------------------------------------------------
+                    | KELAS
+                    |--------------------------------------------------------------------------
                     */
 
-                    const kelas =
+                    const kelasCell =
                         document.createElement('td');
 
-                    kelas.textContent =
-                        row[3]?.trim() || '-';
+                    kelasCell.textContent =
+                        kelas || '-';
 
 
                     /*
-                    | Add cells
+                    |--------------------------------------------------------------------------
+                    | APPEND CELLS
+                    |--------------------------------------------------------------------------
                     */
 
                     tr.appendChild(no);
 
-                    tr.appendChild(nim);
+                    tr.appendChild(nimCell);
 
-                    tr.appendChild(nama);
+                    tr.appendChild(namaCell);
 
-                    tr.appendChild(email);
+                    tr.appendChild(emailCell);
 
-                    tr.appendChild(kelas);
+                    tr.appendChild(kelasCell);
 
 
                     /*
-                    | Add row
+                    |--------------------------------------------------------------------------
+                    | APPEND ROW
+                    |--------------------------------------------------------------------------
                     */
 
                     previewTableBody.appendChild(tr);
@@ -676,14 +859,19 @@
 
                 if (validRows > 0) {
 
-                    previewSection.style.display = 'block';
+                    previewSection.style.display =
+                        'block';
 
-                    importButton.disabled = false;
+                    importButton.disabled =
+                        false;
 
                 } else {
 
                     previewSection.style.display =
                         'none';
+
+                    importButton.disabled =
+                        true;
 
                     alert(
                         'Tidak ditemukan data mahasiswa.'
@@ -692,7 +880,6 @@
                 }
 
             };
-
 
             reader.onerror = function() {
 
