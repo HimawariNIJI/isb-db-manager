@@ -6,6 +6,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\GroupDatabaseController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\GoogleController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -96,3 +97,12 @@ Route::post('/group-databases', [GroupDatabaseController::class, 'store'])
 
 Route::delete('/group-databases/{id}', [GroupDatabaseController::class, 'destroy'])
     ->name('group-databases.destroy');
+
+// =========================
+// Google OAuth Authentication
+// =========================
+
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])
+    ->name('auth.google');
+
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
