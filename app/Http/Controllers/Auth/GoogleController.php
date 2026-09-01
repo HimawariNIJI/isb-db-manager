@@ -49,7 +49,12 @@ class GoogleController extends Controller
             // 3. LOGIN KAN USER & REDIRECT KE DASHBOARD
             Auth::login($user);
 
-            return redirect()->intended('/dashboard')->with('success', 'Berhasil login menggunakan email universitas!');
+            return redirect()
+                ->route('user.dashboard')
+                ->with(
+                    'success',
+                    'Berhasil login menggunakan email universitas!'
+                );
         } catch (\Exception $e) {
             return redirect()->route('login')->with('error', 'Gagal melakukan login dengan Google: ' . $e->getMessage());
         }

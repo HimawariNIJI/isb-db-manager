@@ -812,7 +812,7 @@ body {
     font-size: 11px;
 }
 
-.csv-format > code {
+.csv-format>code {
     display: inline-block;
 
     padding: 7px 10px;
@@ -1055,4 +1055,256 @@ body {
     background: #f8fafc;
     color: #cbd5e1;
     cursor: not-allowed;
+}
+
+/* ========================================= HEADER ========================================= */
+.top-header {
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+    background: var(--background, #fff);
+}
+
+/* ========================================= DESKTOP ========================================= */
+.student-header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+}
+
+.student-header-right .admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.student-profile-info {
+    max-width: 220px;
+    min-width: 0;
+}
+
+.student-profile-info strong {
+    display: block;
+    max-width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.student-profile-info small {
+    display: block;
+}
+
+.logout-btn {
+    white-space: nowrap;
+    min-width: 90px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ========================================= MOBILE BURGER ========================================= */
+.mobile-menu-button {
+    display: none;
+    border: none;
+    background: transparent;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 6px 10px;
+    transition: transform 0.2s ease, background 0.2s ease;
+    border-radius: 8px;
+}
+
+/* Animasi icon ketika dibuka */
+.mobile-menu-button.active {
+    transform: rotate(90deg);
+}
+
+/* ========================================= MOBILE USER MENU ========================================= */
+.mobile-user-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 20px;
+    width: 260px;
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    z-index: 1000;
+    /* Kondisi awal */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px) scale(0.98);
+    transform-origin: top right;
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+}
+
+/* Kondisi ketika dibuka */
+.mobile-user-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+/* ========================================= USER INFO ========================================= */
+.mobile-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #eee;
+    /* Animasi isi */
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: opacity 0.2s ease 0.05s, transform 0.2s ease 0.05s;
+}
+
+.mobile-user-menu.show .mobile-user-info {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.mobile-user-info>div:last-child {
+    min-width: 0;
+}
+
+.mobile-user-info strong {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 190px;
+}
+
+.mobile-user-info small {
+    display: block;
+    color: var(--muted);
+}
+
+/* ========================================= LOGOUT ========================================= */
+.mobile-user-menu form {
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: opacity 0.2s ease 0.1s, transform 0.2s ease 0.1s;
+}
+
+.mobile-user-menu.show form {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.mobile-logout-btn {
+    width: 100%;
+    margin-top: 14px;
+    padding: 9px 12px;
+    border: 1px solid #dc3545;
+    border-radius: 7px;
+    background: white;
+    color: #dc3545;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.mobile-logout-btn:hover {
+    background: #dc3545;
+    color: white;
+}
+
+.mobile-logout-btn:active {
+    transform: scale(0.97);
+}
+
+/* ========================================= MOBILE ========================================= */
+@media (max-width: 768px) {
+    .top-header {
+        position: sticky;
+        top: 0;
+        z-index: 1050;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px 20px;
+    }
+
+    .header-title {
+        min-width: 0;
+    }
+
+    .header-title h4 {
+        margin-bottom: 3px;
+    }
+
+    .header-title p {
+        margin-bottom: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Hide desktop profile */
+    .desktop-user {
+        display: none !important;
+    }
+
+    /* Show burger */
+    .mobile-menu-button {
+        display: block;
+        flex-shrink: 0;
+    }
+
+    /* Mobile menu */
+    .mobile-user-menu {
+        right: 20px;
+    }
+}
+
+/* ========================================= SMALL SCREEN ========================================= */
+@media (max-width: 480px) {
+    .top-header {
+        padding: 12px 15px;
+    }
+
+    .header-title h4 {
+        font-size: 18px;
+    }
+
+    .header-title p {
+        font-size: 12px;
+    }
+
+    .mobile-menu-button {
+        font-size: 25px;
+    }
+
+    .mobile-user-menu {
+        left: 15px;
+        right: 15px;
+        width: auto;
+    }
+}
+
+.student-data-value {
+    font-size: clamp(12px, 2.5vw, 15px);
+    line-height: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.password-toggle-btn {
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+}
+
+.password-toggle-btn.active {
+    background-color: #183883;
+    border-color: #183883;
+    color: white;
+}
+
+.password-toggle-btn:active {
+    transform: scale(0.95);
 }

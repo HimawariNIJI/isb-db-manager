@@ -1,12 +1,13 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\StudentController;
 use App\Http\Controllers\DatabaseController;
 use App\Http\Controllers\GroupDatabaseController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\GoogleController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -106,3 +107,13 @@ Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])
     ->name('auth.google');
 
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/user/dashboard', [UserDashboardController::class, 'index'])
+        ->name('user.dashboard');
+
+    Route::put('/user/password', [UserDashboardController::class, 'updatePassword'])
+        ->name('user.password.update');
+
+});
