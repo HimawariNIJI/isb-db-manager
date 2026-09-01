@@ -99,6 +99,39 @@
 
             <div class="content-container">
 
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show mb-4">
+                        <strong>✓ {{ session('success') }}</strong>
+
+                        @if (session('skipped_count', 0) > 0)
+                            <p class="mb-0 mt-1">
+                                {{ session('skipped_count') }} data dilewati.
+                            </p>
+                        @endif
+
+                        <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert">
+                        </button>
+                    </div>
+                @endif
+
+                @if (session('import_errors') && count(session('import_errors')) > 0)
+                    <div class="alert alert-warning mb-4">
+
+                        <h6 class="fw-bold">
+                            ⚠ Detail Data yang Dilewati
+                        </h6>
+
+                        <ul class="mb-0">
+                            @foreach (session('import_errors') as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+
+                    </div>
+                @endif
+
                 <div class="section-card">
 
                     <div class="section-header">

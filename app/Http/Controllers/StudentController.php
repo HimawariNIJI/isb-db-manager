@@ -612,13 +612,9 @@ class StudentController extends Controller
 
                 if (Student::where('nim', $nim)->exists()) {
 
-                    /*
-                    | Sudah ada → SKIP
-                    | Tidak membuat database baru
-                    | Tidak membuat user baru
-                    */
-
                     $skippedCount++;
+
+                    $errors[] = "NIM {$nim} sudah terdaftar, data dilewati.";
 
                     continue;
                 }
@@ -863,18 +859,31 @@ class StudentController extends Controller
 
             if ($successCount === 0) {
 
+                if ($skippedCount > 0) {
+
+                    return back()
+                        ->with(
+                            'error',
+                            "Tidak ada mahasiswa baru yang berhasil diimport."
+                        )
+                        ->with(
+                            'import_errors',
+                            $errors
+                        )
+                        ->with(
+                            'skipped_count',
+                            $skippedCount
+                        );
+                }
+
                 return back()
                     ->with(
                         'error',
-                        'Tidak ada mahasiswa baru yang berhasil diimport.'
+                        'Tidak ada data mahasiswa yang berhasil diimport.'
                     )
                     ->with(
                         'import_errors',
                         $errors
-                    )
-                    ->with(
-                        'skipped_count',
-                        $skippedCount
                     );
             }
 

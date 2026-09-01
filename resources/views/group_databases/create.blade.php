@@ -66,41 +66,94 @@
 
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-                        <h5 class="alert-heading fw-bold">✓ {{ session('success') }}</h5>
-                        <p class="mb-1">Mahasiswa berikut dapat login melalui MySQL Workbench:</p>
-                        <ul class="mb-2">
-                            <li><strong>Host:</strong> 100.81.151.126</li>
-                            <li><strong>Port:</strong> 3306</li>
-                            <li><strong>Database:</strong> {{ session('db_name') }}</li>
-                        </ul>
-                        @if (session('credentials'))
-                            <div class="table-responsive">
-                                <table class="table table-sm table-bordered bg-white mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>NIM</th>
-                                            <th>Nama</th>
-                                            <th>Username DB</th>
-                                            <th>Password MySQL (Generated)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (session('credentials') as $cred)
+
+                        <h5 class="alert-heading fw-bold">
+                            ✓ {{ session('success') }}
+                        </h5>
+
+                        @if (session('group_created'))
+
+                            <p class="mb-1">
+                                Mahasiswa berikut dapat login melalui MySQL Workbench:
+                            </p>
+
+                            <ul class="mb-2">
+                                <li>
+                                    <strong>Host:</strong>
+                                    100.81.151.126
+                                </li>
+
+                                <li>
+                                    <strong>Port:</strong>
+                                    3306
+                                </li>
+
+                                <li>
+                                    <strong>Database:</strong>
+                                    {{ session('db_name') }}
+                                </li>
+                            </ul>
+
+                            @if (session('credentials'))
+
+                                <div class="table-responsive">
+
+                                    <table class="table table-sm table-bordered bg-white mb-0">
+
+                                        <thead class="table-light">
                                             <tr>
-                                                <td>{{ $cred['nim'] }}</td>
-                                                <td>{{ $cred['nama'] }}</td>
-                                                <td><code class="text-danger font-monospace">{{ $cred['username'] }}</code>
-                                                </td>
-                                                <td><span
-                                                        class="badge bg-dark text-warning font-monospace fs-6">{{ $cred['password'] }}</span>
-                                                </td>
+                                                <th>NIM</th>
+                                                <th>Nama</th>
+                                                <th>Username DB</th>
+                                                <th>Password MySQL (Generated)</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                                        </thead>
+
+                                        <tbody>
+
+                                            @foreach (session('credentials') as $cred)
+
+                                                <tr>
+
+                                                    <td>
+                                                        {{ $cred['nim'] }}
+                                                    </td>
+
+                                                    <td>
+                                                        {{ $cred['nama'] }}
+                                                    </td>
+
+                                                    <td>
+                                                        <code class="text-danger font-monospace">
+                                                            {{ $cred['username'] }}
+                                                        </code>
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="badge bg-dark text-warning fs-6 font-monospace">
+                                                            {{ $cred['password'] }}
+                                                        </span>
+                                                    </td>
+
+                                                </tr>
+
+                                            @endforeach
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            @endif
+
                         @endif
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+                        <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert">
+                        </button>
+
                     </div>
                 @endif
 

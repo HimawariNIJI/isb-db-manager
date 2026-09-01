@@ -99,6 +99,54 @@
 
             <div class="content-container">
 
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                        <strong>⚠ Import Tidak Berhasil</strong>
+                        <p class="mb-0 mt-1">{{ session('error') }}</p>
+
+                        <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert">
+                        </button>
+                    </div>
+                @endif
+
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                        <strong>✓ Import Berhasil</strong>
+                        <p class="mb-0 mt-1">{{ session('success') }}</p>
+
+                        @if (session('skipped_count', 0) > 0)
+                            <p class="mb-0 mt-1">
+                                <strong>{{ session('skipped_count') }}</strong>
+                                data dilewati karena sudah terdaftar atau bukan mahasiswa.
+                            </p>
+                        @endif
+
+                        <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert">
+                        </button>
+                    </div>
+                @endif
+
+
+                @if (session('import_errors') && count(session('import_errors')) > 0)
+                    <div class="alert alert-warning mb-4" role="alert">
+
+                        <h6 class="fw-bold mb-2">
+                            ⚠ Detail Data yang Dilewati
+                        </h6>
+
+                        <ul class="mb-0">
+                            @foreach (session('import_errors') as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+
+                    </div>
+                @endif
+
                 <form action="{{ route('students.import.store') }}" method="POST" enctype="multipart/form-data"
                     id="importForm">
                     @csrf

@@ -84,7 +84,8 @@ class GroupDatabaseController extends Controller
             return redirect()->route('group-databases.create')
                 ->with('success', "Database kelompok '{$dbName}' berhasil dibuat!")
                 ->with('credentials', $createdCredentials)
-                ->with('db_name', $dbName);
+                ->with('db_name', $dbName)
+                ->with('group_created', true);
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
