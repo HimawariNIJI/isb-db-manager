@@ -31,73 +31,74 @@ Route::post('/logout', [LoginController::class, 'logout'])
 // =========================
 // Dashboard
 // =========================
-
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->name('dashboard');
-
-
-// =========================
-// Student Management
-// =========================
-
-Route::get('/students/create', [StudentController::class, 'create'])
-    ->name('students.create');
-
-Route::post('/students', [StudentController::class, 'store'])
-    ->name('students.store');
-
-Route::get('/students/import', [StudentController::class, 'importPage'])
-    ->name('students.import');
-
-Route::post('/students/import', [StudentController::class, 'import'])
-    ->name('students.import.store');
-
-Route::get('/students/template', [StudentController::class, 'downloadTemplate'])
-    ->name('students.template');
-
-Route::get('/students', [StudentController::class, 'index'])
-    ->name('students.index');
-
-Route::get('/students/export', [StudentController::class, 'export'])
-    ->name('students.export');
-
-Route::get('/students/{student}', [StudentController::class, 'show'])
-    ->name('students.show');
-
-Route::delete('/students/{student}', [StudentController::class, 'destroy'])
-    ->name('students.destroy');
-
-Route::put('/students/{student}/password', [StudentController::class, 'updatePassword'])
-    ->name('students.updatePassword');
+Route::middleware(['admin'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
 
-// =========================
-// Database Management
-// =========================
+    // =========================
+    // Student Management
+    // =========================
 
-Route::get('/databases', [DatabaseController::class, 'index'])
-    ->name('databases.index');
+    Route::get('/students/create', [StudentController::class, 'create'])
+        ->name('students.create');
 
-Route::get('/databases/{student}', [DatabaseController::class, 'show'])
-    ->name('databases.show');
+    Route::post('/students', [StudentController::class, 'store'])
+        ->name('students.store');
 
-Route::post('/databases/{id}/grant', [DatabaseController::class, 'grantAccess'])
-    ->name('databases.grant');
+    Route::get('/students/import', [StudentController::class, 'importPage'])
+        ->name('students.import');
 
-Route::post('/databases/{id}/revoke', [DatabaseController::class, 'revokeAccess'])
-    ->name('databases.revoke');
+    Route::post('/students/import', [StudentController::class, 'import'])
+        ->name('students.import.store');
 
-Route::post('/databases/{id}/update-access', [DatabaseController::class, 'updateAccess'])
-    ->name('databases.update-access');
+    Route::get('/students/template', [StudentController::class, 'downloadTemplate'])
+        ->name('students.template');
 
-Route::get('/group-databases/create', [GroupDatabaseController::class, 'create'])
-    ->name('group-databases.create');
+    Route::get('/students', [StudentController::class, 'index'])
+        ->name('students.index');
 
-Route::post('/group-databases', [GroupDatabaseController::class, 'store'])
-    ->name('group-databases.store');
+    Route::get('/students/export', [StudentController::class, 'export'])
+        ->name('students.export');
 
-Route::delete('/group-databases/{id}', [GroupDatabaseController::class, 'destroy'])
-    ->name('group-databases.destroy');
+    Route::get('/students/{student}', [StudentController::class, 'show'])
+        ->name('students.show');
+
+    Route::delete('/students/{student}', [StudentController::class, 'destroy'])
+        ->name('students.destroy');
+
+    Route::put('/students/{student}/password', [StudentController::class, 'updatePassword'])
+        ->name('students.updatePassword');
+
+
+    // =========================
+    // Database Management
+    // =========================
+
+    Route::get('/databases', [DatabaseController::class, 'index'])
+        ->name('databases.index');
+
+    Route::get('/databases/{student}', [DatabaseController::class, 'show'])
+        ->name('databases.show');
+
+    Route::post('/databases/{id}/grant', [DatabaseController::class, 'grantAccess'])
+        ->name('databases.grant');
+
+    Route::post('/databases/{id}/revoke', [DatabaseController::class, 'revokeAccess'])
+        ->name('databases.revoke');
+
+    Route::post('/databases/{id}/update-access', [DatabaseController::class, 'updateAccess'])
+        ->name('databases.update-access');
+
+    Route::get('/group-databases/create', [GroupDatabaseController::class, 'create'])
+        ->name('group-databases.create');
+
+    Route::post('/group-databases', [GroupDatabaseController::class, 'store'])
+        ->name('group-databases.store');
+
+    Route::delete('/group-databases/{id}', [GroupDatabaseController::class, 'destroy'])
+        ->name('group-databases.destroy');
+});
 
 // =========================
 // Google OAuth Authentication
@@ -115,5 +116,4 @@ Route::middleware('auth')->group(function () {
 
     Route::put('/user/password', [UserDashboardController::class, 'updatePassword'])
         ->name('user.password.update');
-
 });
