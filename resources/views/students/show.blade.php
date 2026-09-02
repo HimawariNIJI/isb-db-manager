@@ -444,7 +444,7 @@
 
 
                         <form action="{{ route('students.destroy', $student) }}" method="POST"
-                            onsubmit="return confirmDelete()">
+                            data-confirm="Apakah kamu yakin ingin menghapus mahasiswa ini? Data mahasiswa, user MySQL, dan database mahasiswa akan dihapus secara permanen.">
 
                             @csrf
 
@@ -514,13 +514,7 @@
             }
         }
 
-        function confirmDelete() {
-
-            return confirm(
-                'Apakah kamu yakin ingin menghapus mahasiswa ini?\n\n' +
-                'Data mahasiswa, user MySQL, dan database mahasiswa akan dihapus secara permanen.'
-            );
-        }
+        // confirmation handled globally by the layout's modal (forms use data-confirm)
     </script>
 
 @endsection

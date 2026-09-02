@@ -737,7 +737,7 @@
                                                 </button>
                                                 <form action="{{ route('databases.revoke', $database->id) }}"
                                                     method="POST"
-                                                    onsubmit="return confirm('Apakah Anda yakin ingin mencabut akses ini?')">
+                                                    data-confirm="Apakah Anda yakin ingin mencabut akses ini?">
                                                     @csrf
                                                     <input type="hidden" name="username"
                                                         value="{{ $access['username'] }}">

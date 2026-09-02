@@ -333,7 +333,7 @@
                                                 <form
                                                     action="{{ route('group-databases.destroy', $gDb->id) }}"
                                                     method="POST"
-                                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus database {{ $gDb->database_name }}?')">
+                                                    data-confirm="Apakah Anda yakin ingin menghapus database {{ $gDb->database_name }}?">
 
                                                     @csrf
                                                     @method('DELETE')
