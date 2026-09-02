@@ -1317,3 +1317,33 @@ body {
 .password-toggle-btn:active {
     transform: scale(0.95);
 }
+
+/* ========================================
+   GROUP DATABASE DETAIL ANIMATION
+======================================== */
+
+.detail-row {
+    display: none;
+}
+
+.detail-wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+        grid-template-rows 0.3s ease,
+        opacity 0.2s ease;
+}
+
+.detail-wrapper > .detail-content {
+    overflow: hidden;
+}
+
+.detail-row.show {
+    display: table-row;
+}
+
+.detail-row.show .detail-wrapper {
+    grid-template-rows: 1fr;
+    opacity: 1;
+}

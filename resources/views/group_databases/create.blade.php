@@ -297,14 +297,17 @@
                                     <!-- Baris Utama Database -->
                                     <tr class="group-db-row">
                                         <td>
-                                            <strong class="text-primary font-monospace fs-6">🗄
-                                                {{ $gDb->database_name }}</strong>
+                                            <strong class="text-primary font-monospace fs-6">
+                                                🗄 {{ $gDb->database_name }}
+                                            </strong>
                                         </td>
+
                                         <td>
                                             <span class="badge bg-info text-dark px-3 py-2 rounded-pill fw-bold">
                                                 {{ $gDb->students->count() }} Mahasiswa
                                             </span>
                                         </td>
+
                                         <td>
                                             <div class="d-flex flex-wrap gap-1">
                                                 @foreach ($gDb->students as $st)
@@ -314,89 +317,155 @@
                                                 @endforeach
                                             </div>
                                         </td>
+
                                         <td class="text-end">
                                             <div class="d-inline-flex gap-2">
-                                                <!-- Tombol Detail (Toggle Collapse) -->
-                                                <button class="btn btn-sm btn-outline-primary fw-bold" type="button"
-                                                    data-bs-toggle="collapse"
-                                                    data-bs-target="#detail-row-{{ $gDb->id }}"
-                                                    aria-expanded="false">
+
+                                                <!-- Tombol Detail -->
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-sm btn-outline-primary fw-bold detail-toggle"
+                                                    data-target="detail-row-{{ $gDb->id }}">
                                                     Detail
                                                 </button>
 
                                                 <!-- Tombol Delete -->
-                                                <form action="{{ route('group-databases.destroy', $gDb->id) }}"
+                                                <form
+                                                    action="{{ route('group-databases.destroy', $gDb->id) }}"
                                                     method="POST"
                                                     onsubmit="return confirm('Apakah Anda yakin ingin menghapus database {{ $gDb->database_name }}?')">
+
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger fw-bold">
+
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-sm btn-outline-danger fw-bold">
                                                         Hapus
                                                     </button>
                                                 </form>
+
                                             </div>
                                         </td>
                                     </tr>
 
                                     <!-- BARIS DETAIL (DENGAN INFORMASI HOST & PORT) -->
-                                    <tr class="collapse" id="detail-row-{{ $gDb->id }}">
+                                    <tr id="detail-row-{{ $gDb->id }}"
+                                        class="detail-row">
+
                                         <td colspan="4" class="p-0 border-0">
-                                            <div class="p-3 bg-light border-bottom">
 
-                                                <!-- Card Info Host & Port Connection -->
-                                                <div
-                                                    class="p-2 px-3 bg-white rounded border mb-3 d-flex align-items-center gap-4 flex-wrap shadow-sm">
-                                                    <div>
-                                                        <small class="text-muted d-block">Host Server:</small>
-                                                        <strong
-                                                            class="font-monospace text-dark fs-6">100.81.151.126</strong>
-                                                    </div>
-                                                    <div class="border-start ps-4">
-                                                        <small class="text-muted d-block">Port:</small>
-                                                        <strong class="font-monospace text-dark fs-6">3306</strong>
-                                                    </div>
-                                                    <div class="border-start ps-4">
-                                                        <small class="text-muted d-block">Database Name:</small>
-                                                        <strong
-                                                            class="font-monospace text-primary fs-6">{{ $gDb->database_name }}</strong>
-                                                    </div>
-                                                </div>
+                                            <div class="detail-wrapper">
 
-                                                <!-- Tabel Anggota Kelompok -->
-                                                <div class="table-responsive bg-white rounded border">
-                                                    <table class="table table-bordered align-middle mb-0">
-                                                        <thead class="table-light">
-                                                            <tr>
-                                                                <th class="fw-bold">NIM</th>
-                                                                <th class="fw-bold">Nama</th>
-                                                                <th class="fw-bold">Username DB</th>
-                                                                <th class="fw-bold">Password MySQL (Generated)</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach ($gDb->students as $student)
+                                                <div class="detail-content p-3 bg-light border-bottom">
+
+                                                    <!-- Card Info Host & Port -->
+                                                    <div
+                                                        class="p-2 px-3 bg-white rounded border mb-3 d-flex align-items-center gap-4 flex-wrap shadow-sm">
+
+                                                        <div>
+                                                            <small class="text-muted d-block">
+                                                                Host Server:
+                                                            </small>
+
+                                                            <strong class="font-monospace text-dark fs-6">
+                                                                100.81.151.126
+                                                            </strong>
+                                                        </div>
+
+                                                        <div class="border-start ps-4">
+                                                            <small class="text-muted d-block">
+                                                                Port:
+                                                            </small>
+
+                                                            <strong class="font-monospace text-dark fs-6">
+                                                                3306
+                                                            </strong>
+                                                        </div>
+
+                                                        <div class="border-start ps-4">
+                                                            <small class="text-muted d-block">
+                                                                Database Name:
+                                                            </small>
+
+                                                            <strong class="font-monospace text-primary fs-6">
+                                                                {{ $gDb->database_name }}
+                                                            </strong>
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    <!-- Tabel Anggota -->
+                                                    <div class="table-responsive bg-white rounded border">
+
+                                                        <table class="table table-bordered align-middle mb-0">
+
+                                                            <thead class="table-light">
+
                                                                 <tr>
-                                                                    <td>{{ $student->nim }}</td>
-                                                                    <td class="fw-bold">{{ strtoupper($student->nama) }}
-                                                                    </td>
-                                                                    <td>
-                                                                        <code class="text-danger font-monospace fs-6">
-                                                                            {{ $student->mysql_username }}
-                                                                        </code>
-                                                                    </td>
-                                                                    <td>
-                                                                        <span
-                                                                            class="badge bg-dark text-warning fs-6 font-monospace px-3 py-1">
-                                                                            {{ $gDb->password ?? 'N/A' }}
-                                                                        </span>
-                                                                    </td>
+                                                                    <th class="fw-bold">
+                                                                        NIM
+                                                                    </th>
+
+                                                                    <th class="fw-bold">
+                                                                        Nama
+                                                                    </th>
+
+                                                                    <th class="fw-bold">
+                                                                        Username DB
+                                                                    </th>
+
+                                                                    <th class="fw-bold">
+                                                                        Password MySQL (Generated)
+                                                                    </th>
                                                                 </tr>
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>
+
+                                                            </thead>
+
+                                                            <tbody>
+
+                                                                @foreach ($gDb->students as $student)
+
+                                                                    <tr>
+
+                                                                        <td>
+                                                                            {{ $student->nim }}
+                                                                        </td>
+
+                                                                        <td class="fw-bold">
+                                                                            {{ strtoupper($student->nama) }}
+                                                                        </td>
+
+                                                                        <td>
+                                                                            <code class="text-danger font-monospace fs-6">
+                                                                                {{ $student->mysql_username }}
+                                                                            </code>
+                                                                        </td>
+
+                                                                        <td>
+                                                                            <span
+                                                                                class="badge bg-dark text-warning fs-6 font-monospace px-3 py-1">
+                                                                                {{ $gDb->password ?? 'N/A' }}
+                                                                            </span>
+                                                                        </td>
+
+                                                                    </tr>
+
+                                                                @endforeach
+
+                                                            </tbody>
+
+                                                        </table>
+
+                                                    </div>
+
                                                 </div>
+
                                             </div>
+
                                         </td>
+
                                     </tr>
                                 @empty
                                     <tr>
@@ -425,118 +494,312 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            const searchStudentInput = document.getElementById('searchStudent');
-            const selectAllCheckbox = document.getElementById('selectAll');
-            const studentTableRows = document.querySelectorAll('#studentTable tbody tr');
+            // ==========================
+            // SEARCH MAHASISWA
+            // ==========================
 
-            // Ambil semua checkbox mahasiswa yang sedang terlihat
+            const searchStudentInput =
+                document.getElementById('searchStudent');
+
+            const selectAllCheckbox =
+                document.getElementById('selectAll');
+
+            const studentTableRows =
+                document.querySelectorAll('#studentTable tbody tr');
+
+
             function getVisibleStudentCheckboxes() {
+
                 return Array.from(
-                    document.querySelectorAll('#studentTable tbody .student-checkbox')
+                    document.querySelectorAll(
+                        '#studentTable tbody .student-checkbox'
+                    )
                 ).filter(checkbox => {
+
                     const row = checkbox.closest('tr');
+
                     return row && row.style.display !== 'none';
+
                 });
+
             }
 
-            // Update checkbox "Select All"
+
             function updateSelectAllState() {
-                const checkboxes = getVisibleStudentCheckboxes();
+
+                const checkboxes =
+                    getVisibleStudentCheckboxes();
 
                 if (checkboxes.length === 0) {
+
                     selectAllCheckbox.checked = false;
+
                     return;
                 }
 
-                // TRUE hanya jika SEMUA checkbox dicentang
-                const allChecked = checkboxes.every(
-                    checkbox => checkbox.checked
-                );
+                const allChecked =
+                    checkboxes.every(
+                        checkbox => checkbox.checked
+                    );
 
                 selectAllCheckbox.checked = allChecked;
             }
 
-            // ==========================
-            // SEARCH MAHASISWA
-            // ==========================
+
             if (searchStudentInput) {
-                searchStudentInput.addEventListener('keyup', function() {
-                    const filter = this.value.toLowerCase();
 
-                    studentTableRows.forEach(row => {
-                        const text = row.innerText.toLowerCase();
+                searchStudentInput.addEventListener(
+                    'keyup',
+                    function() {
 
-                        row.style.display = text.includes(filter)
-                            ? ''
-                            : 'none';
-                    });
+                        const filter =
+                            this.value.toLowerCase();
 
-                    updateSelectAllState();
-                });
+                        studentTableRows.forEach(row => {
+
+                            const text =
+                                row.innerText.toLowerCase();
+
+                            row.style.display =
+                                text.includes(filter)
+                                    ? ''
+                                    : 'none';
+
+                        });
+
+                        updateSelectAllState();
+
+                    }
+                );
+
             }
+
 
             // ==========================
             // SELECT ALL
             // ==========================
-            if (selectAllCheckbox) {
-                selectAllCheckbox.addEventListener('change', function() {
-                    const isChecked = this.checked;
 
-                    getVisibleStudentCheckboxes().forEach(checkbox => {
-                        checkbox.checked = isChecked;
-                    });
-                });
+            if (selectAllCheckbox) {
+
+                selectAllCheckbox.addEventListener(
+                    'change',
+                    function() {
+
+                        const isChecked =
+                            this.checked;
+
+                        getVisibleStudentCheckboxes()
+                            .forEach(checkbox => {
+
+                                checkbox.checked =
+                                    isChecked;
+
+                            });
+
+                    }
+                );
+
             }
+
 
             // ==========================
             // CHECKBOX INDIVIDUAL
             // ==========================
-            const studentCheckboxes = document.querySelectorAll(
-                '#studentTable tbody .student-checkbox'
-            );
+
+            const studentCheckboxes =
+                document.querySelectorAll(
+                    '#studentTable tbody .student-checkbox'
+                );
 
             studentCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    updateSelectAllState();
-                });
+
+                checkbox.addEventListener(
+                    'change',
+                    function() {
+
+                        updateSelectAllState();
+
+                    }
+                );
+
             });
 
-            // ==========================
-            // INITIAL STATE
-            // ==========================
+
             updateSelectAllState();
+
+
+            // ==========================
+            // DETAIL DATABASE TOGGLE
+            // ==========================
+
+            const detailButtons =
+                document.querySelectorAll(
+                    '.detail-toggle'
+                );
+
+
+            detailButtons.forEach(button => {
+
+                button.addEventListener(
+                    'click',
+                    function() {
+
+                        const targetId =
+                            this.getAttribute(
+                                'data-target'
+                            );
+
+                        const targetRow =
+                            document.getElementById(
+                                targetId
+                            );
+
+
+                        if (!targetRow) {
+                            return;
+                        }
+
+
+                        const isOpen =
+                            targetRow.classList.contains(
+                                'show'
+                            );
+
+
+                        if (isOpen) {
+
+                            // CLOSE
+
+                            targetRow.classList.remove(
+                                'show'
+                            );
+
+                            this.textContent =
+                                'Detail';
+
+
+                            setTimeout(() => {
+
+                                if (
+                                    !targetRow.classList.contains(
+                                        'show'
+                                    )
+                                ) {
+
+                                    targetRow.style.display =
+                                        'none';
+
+                                }
+
+                            }, 300);
+
+
+                        } else {
+
+                            // OPEN
+
+                            targetRow.style.display =
+                                'table-row';
+
+
+                            // Force reflow
+                            targetRow.offsetHeight;
+
+
+                            targetRow.classList.add(
+                                'show'
+                            );
+
+
+                            this.textContent =
+                                'Tutup';
+
+                        }
+
+                    }
+                );
+
+            });
 
 
             // ==========================
             // SEARCH GROUP DATABASE
             // ==========================
-            const searchGroupDbInput = document.getElementById('searchGroupDb');
-            const groupDbRows = document.querySelectorAll(
-                '#groupDbTable tbody tr.group-db-row'
-            );
+
+            const searchGroupDbInput =
+                document.getElementById(
+                    'searchGroupDb'
+                );
+
+            const groupDbRows =
+                document.querySelectorAll(
+                    '#groupDbTable tbody tr.group-db-row'
+                );
+
 
             if (searchGroupDbInput) {
-                searchGroupDbInput.addEventListener('keyup', function() {
-                    const filter = this.value.toLowerCase();
 
-                    groupDbRows.forEach(row => {
-                        const text = row.innerText.toLowerCase();
-                        const nextCollapseRow = row.nextElementSibling;
+                searchGroupDbInput.addEventListener(
+                    'keyup',
+                    function() {
 
-                        if (text.includes(filter)) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
+                        const filter =
+                            this.value.toLowerCase();
 
-                            if (
-                                nextCollapseRow &&
-                                nextCollapseRow.classList.contains('collapse')
-                            ) {
-                                nextCollapseRow.classList.remove('show');
+
+                        groupDbRows.forEach(row => {
+
+                            const text =
+                                row.innerText.toLowerCase();
+
+                            const nextDetailRow =
+                                row.nextElementSibling;
+
+
+                            if (text.includes(filter)) {
+
+                                row.style.display = '';
+
+                            } else {
+
+                                row.style.display =
+                                    'none';
+
+
+                                if (
+                                    nextDetailRow &&
+                                    nextDetailRow.classList.contains(
+                                        'detail-row'
+                                    )
+                                ) {
+
+                                    nextDetailRow.classList.remove(
+                                        'show'
+                                    );
+
+                                    nextDetailRow.style.display =
+                                        'none';
+
+
+                                    const button =
+                                        row.querySelector(
+                                            '.detail-toggle'
+                                        );
+
+                                    if (button) {
+                                        button.textContent =
+                                            'Detail';
+                                    }
+
+                                }
+
                             }
-                        }
-                    });
-                });
+
+                        });
+
+                    }
+                );
+
             }
 
         });
