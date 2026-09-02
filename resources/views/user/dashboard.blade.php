@@ -29,7 +29,7 @@
                             <small>Mahasiswa</small>
                         </div>
                     </div>
-                    <form action="{{ route('logout') }}" method="POST">
+                    <form action="{{ route('userlogout') }}" method="POST">
                         @csrf
                         <button type="submit" class="btn btn-outline-danger fw-bold logout-btn">
                             ↪ Logout

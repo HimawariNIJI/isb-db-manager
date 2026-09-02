@@ -10,7 +10,7 @@ use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect()->route('login');
+    return redirect()->route('userlogin');
 });
 
 
@@ -18,13 +18,22 @@ Route::get('/', function () {
 // Authentication
 // =========================
 
-Route::get('/login', [LoginController::class, 'showLogin'])
+Route::get('/login', [LoginController::class, 'showUserLogin'])
+    ->name('userlogin');
+
+Route::post('/login', [LoginController::class, 'userLogin'])
+    ->name('userlogin.submit');
+
+Route::post('/logout', [LoginController::class, 'logoutUser'])
+    ->name('userlogout');
+
+Route::get('/admin/login', [LoginController::class, 'showAdminLogin'])
     ->name('login');
 
-Route::post('/login', [LoginController::class, 'login'])
+Route::post('/admin/login', [LoginController::class, 'adminLogin'])
     ->name('login.submit');
 
-Route::post('/logout', [LoginController::class, 'logout'])
+Route::post('/admin/logout', [LoginController::class, 'logoutAdmin'])
     ->name('logout');
 
 

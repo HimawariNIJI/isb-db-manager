@@ -6,12 +6,17 @@ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
-    public function showLogin()
+    public function showUserLogin()
+    {
+        return view('auth.userlogin');
+    }
+
+    public function showAdminLogin()
     {
         return view('auth.login');
     }
 
-    public function login(Request $request)
+    public function adminLogin(Request $request)
     {
         $credentials = $request->validate([
             'username' => 'required',
@@ -32,10 +37,17 @@ class LoginController extends Controller
             ->with('error', 'Username atau password salah.');
     }
 
-    public function logout(Request $request)
+    public function logoutAdmin(Request $request)
     {
         $request->session()->forget('admin_logged_in');
 
         return redirect()->route('login');
+    }
+
+    public function logoutUser(Request $request)
+    {
+        $request->session()->forget('user_logged_in');
+
+        return redirect()->route('userlogin');
     }
 }
