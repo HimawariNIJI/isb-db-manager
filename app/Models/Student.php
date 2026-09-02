@@ -15,6 +15,11 @@ class Student extends Model
         'mysql_username',
         'mysql_password',
     ];
+    public function groupDatabases()
+    {
+        return $this->belongsToMany(GroupDatabase::class, 'group_database_student');
+    }
+
     public function groups()
     {
         return $this->belongsToMany(

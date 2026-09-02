@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Student;
 
 class GroupDatabase extends Model
 {
@@ -19,5 +20,11 @@ class GroupDatabase extends Model
             'group_database_id',
             'student_id'
         );
+    }
+
+    // Backwards-compatible alias: some controllers expect `students` relation
+    public function students()
+    {
+        return $this->members();
     }
 }

@@ -94,56 +94,7 @@
                                 </li>
                             </ul>
 
-                            @if (session('credentials'))
-
-                                <div class="table-responsive">
-
-                                    <table class="table table-sm table-bordered bg-white mb-0">
-
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>NIM</th>
-                                                <th>Nama</th>
-                                                <th>Username DB</th>
-                                                <th>Password MySQL (Generated)</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-
-                                            @foreach (session('credentials') as $cred)
-                                                <tr>
-
-                                                    <td>
-                                                        {{ $cred['nim'] }}
-                                                    </td>
-
-                                                    <td>
-                                                        {{ $cred['nama'] }}
-                                                    </td>
-
-                                                    <td>
-                                                        <code class="text-danger font-monospace">
-                                                            {{ $cred['username'] }}
-                                                        </code>
-                                                    </td>
-
-                                                    <td>
-                                                        <span class="badge bg-dark text-warning fs-6 font-monospace">
-                                                            {{ $cred['password'] }}
-                                                        </span>
-                                                    </td>
-
-                                                </tr>
-                                            @endforeach
-
-                                        </tbody>
-
-                                    </table>
-
-                                </div>
-
-                            @endif
+                            {{-- Credentials removed: group databases now use individual user passwords --}}
 
                         @endif
 
@@ -395,21 +346,9 @@
                                                             <thead class="table-light">
 
                                                                 <tr>
-                                                                    <th class="fw-bold">
-                                                                        NIM
-                                                                    </th>
-
-                                                                    <th class="fw-bold">
-                                                                        Nama
-                                                                    </th>
-
-                                                                    <th class="fw-bold">
-                                                                        Username DB
-                                                                    </th>
-
-                                                                    <th class="fw-bold">
-                                                                        Password MySQL (Generated)
-                                                                    </th>
+                                                                    <th class="fw-bold">NIM</th>
+                                                                    <th class="fw-bold">Nama</th>
+                                                                    <th class="fw-bold">Username DB</th>
                                                                 </tr>
 
                                                             </thead>
@@ -431,13 +370,6 @@
                                                                             <code class="text-danger font-monospace fs-6">
                                                                                 {{ $student->mysql_username }}
                                                                             </code>
-                                                                        </td>
-
-                                                                        <td>
-                                                                            <span
-                                                                                class="badge bg-dark text-warning fs-6 font-monospace px-3 py-1">
-                                                                                {{ $gDb->password ?? 'N/A' }}
-                                                                            </span>
                                                                         </td>
 
                                                                     </tr>

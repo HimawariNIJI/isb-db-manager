@@ -48,36 +48,54 @@ class GroupDatabaseController extends Controller
         $selectedStudents = Student::whereIn('id', $request->students)->get();
         $createdCredentials = [];
 
-        // 1. Generate 1 Password Seragam untuk seluruh user di kelompok ini
-        $groupPassword = Str::random(12);
-
         try {
             // 2. Buat Database Baru di Host Lab
-            DB::connection('mysql_lab')->statement("CREATE DATABASE IF NOT EXISTS `{$dbName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+            $mysql = DB::connection('mysql_lab');
+            $pdo = $mysql->getPdo();
+
+            $mysql->statement("CREATE DATABASE IF NOT EXISTS `{$dbName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
 
             foreach ($selectedStudents as $student) {
                 $username = trim($student->mysql_username);
                 if (!$username) continue;
 
-                // 3. Set password yang sama untuk tiap user kelompok di MySQL Server
-                DB::connection('mysql_lab')->statement("CREATE USER IF NOT EXISTS '{$username}'@'%' IDENTIFIED BY '{$groupPassword}';");
-                DB::connection('mysql_lab')->statement("ALTER USER '{$username}'@'%' IDENTIFIED BY '{$groupPassword}';");
-                DB::connection('mysql_lab')->statement("GRANT ALL PRIVILEGES ON `{$dbName}`.* TO '{$username}'@'%';");
+                // Cari host yang sudah ada untuk user ini di server MySQL
+                $userHosts = $mysql->select("SELECT Host FROM mysql.user WHERE User = ?", [$username]);
+
+                if (empty($userHosts)) {
+                    // Jika tidak ada entri user di server MySQL, buat hanya user@'%'
+                    // Menghindari pembuatan host spesifik yang menyebabkan duplikasi.
+                    $pwd = $student->mysql_password ?? '';
+                    $quotedPwd = $pdo->quote($pwd);
+                    $hostsToCreate = ['%'];
+                    foreach ($hostsToCreate as $h) {
+                        $mysql->statement("CREATE USER IF NOT EXISTS '{$username}'@'{$h}' IDENTIFIED BY {$quotedPwd}");
+                    }
+                    $hosts = $hostsToCreate;
+                } else {
+                    // Gunakan host yang sudah ada dan jangan buat host baru
+                    $hosts = array_map(fn($r) => $r->Host, $userHosts);
+                }
+
+                // Berikan GRANT pada setiap host yang relevan
+                foreach ($hosts as $host) {
+                    $mysql->statement("GRANT ALL PRIVILEGES ON `{$dbName}`.* TO '{$username}'@'{$host}'");
+                }
 
                 $createdCredentials[] = [
                     'nim'      => $student->nim,
                     'nama'     => $student->nama,
                     'username' => $username,
-                    'password' => $groupPassword,
+                    'password' => $student->mysql_password ?? null,
                 ];
             }
 
-            DB::connection('mysql_lab')->statement("FLUSH PRIVILEGES;");
+            $mysql->statement("FLUSH PRIVILEGES;");
 
-            // 4. Simpan ke database lokal beserta password kelompoknya
+            // 4. Simpan ke database lokal (tidak menyimpan password kelompok)
             $groupDb = GroupDatabase::create([
                 'database_name' => $dbName,
-                'password'      => $groupPassword,
+                'password'      => null,
             ]);
             $groupDb->students()->sync($request->students);
 
@@ -99,14 +117,43 @@ class GroupDatabaseController extends Controller
             $groupDb = GroupDatabase::with('students')->findOrFail($id);
             $dbName = $groupDb->database_name;
 
-            DB::connection('mysql_lab')->statement("DROP DATABASE IF EXISTS `{$dbName}`;");
+            $mysql = DB::connection('mysql_lab');
+            $pdo = $mysql->getPdo();
+
+            $mysql->statement("DROP DATABASE IF EXISTS `{$dbName}`;");
 
             foreach ($groupDb->students as $student) {
-                if ($student->mysql_username) {
-                    DB::connection('mysql_lab')->statement("REVOKE ALL PRIVILEGES ON `{$dbName}`.* FROM '{$student->mysql_username}'@'%';");
+                $username = $student->mysql_username;
+                if (!$username) continue;
+
+                $quotedUsername = $pdo->quote($username);
+
+                // Determine existing hosts for this user; if none, try common hosts
+                $userHosts = $mysql->select("SELECT Host FROM mysql.user WHERE User = ?", [$username]);
+                if (!empty($userHosts)) {
+                    $hosts = array_map(fn($r) => $r->Host, $userHosts);
+                } else {
+                    // Jika tidak ada host sama sekali, fallback hanya ke '%'
+                    $hosts = ['%'];
+                }
+
+                foreach ($hosts as $host) {
+                    $exists = $mysql->select("SELECT 1 FROM mysql.user WHERE User = ? AND Host = ? LIMIT 1", [$username, $host]);
+                    if (empty($exists)) continue;
+
+                    try {
+                        $mysql->statement("REVOKE ALL PRIVILEGES ON `{$dbName}`.* FROM {$quotedUsername}@'{$host}';");
+                    } catch (\Exception $e) {
+                        $msg = $e->getMessage();
+                        if (stripos($msg, '1141') !== false || stripos($msg, 'no such grant') !== false) {
+                            continue;
+                        }
+                        throw $e;
+                    }
                 }
             }
-            DB::connection('mysql_lab')->statement("FLUSH PRIVILEGES;");
+
+            $mysql->statement("FLUSH PRIVILEGES;");
 
             $groupDb->students()->detach();
             $groupDb->delete();

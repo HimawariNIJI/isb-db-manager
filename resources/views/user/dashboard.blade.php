@@ -403,11 +403,11 @@
                                                     {{ $group->database_name }}</div>
                                             </div>
                                             <div class="col-md-12">
-                                                <label class="form-label text-muted">Password Database Kelompok</label>
+                                                <label class="form-label text-muted">Password Database</label>
                                                 <div class="input-group">
                                                     <input type="password" id="modalPasswordGroup{{ $group->id }}"
                                                         class="form-control bg-light font-monospace"
-                                                        value="{{ $group->password ?? '' }}" readonly>
+                                                        value="{{ $student->mysql_password ?? '' }}" readonly>
                                                     <button type="button" class="btn btn-outline-secondary"
                                                         onclick="toggleModalPassword('modalPasswordGroup{{ $group->id }}', this)">👁</button>
                                                 </div>
