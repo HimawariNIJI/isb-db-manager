@@ -198,108 +198,231 @@
                 </div>
 
 
-                <!-- INFORMASI DATABASE -->
+                <!-- DAFTAR DATABASE (PRIBADI & KELOMPOK) -->
                 <div class="section-card mb-4">
-
                     <div class="section-header">
-
                         <div>
-
-                            <h5>Informasi Database</h5>
-
-                            <p>
-                                Gunakan informasi berikut untuk terhubung
-                                menggunakan MySQL Workbench
-                            </p>
-
+                            <h5>Daftar Database</h5>
+                            <p>Daftar database pribadi dan kelompok yang terhubung dengan akun Anda</p>
                         </div>
-
                     </div>
 
-
-                    <div class="row g-4">
-
-                        <!-- IP SERVER -->
-                        <div class="col-md-6">
-
-                            <label class="form-label text-muted">
-                                IP Server
-                            </label>
-
-                            <div class="form-control bg-light font-monospace student-data-value">
-                                100.81.151.126
-                            </div>
-
-                        </div>
-
-
-                        <!-- PORT -->
-                        <div class="col-md-6">
-
-                            <label class="form-label text-muted">
-                                Port
-                            </label>
-
-                            <div class="form-control bg-light font-monospace student-data-value">
-                                3306
-                            </div>
-
-                        </div>
-
-
-                        <!-- USERNAME -->
-                        <div class="col-md-6">
-
-                            <label class="form-label text-muted">
-                                Username Database
-                            </label>
-
-                            <div class="form-control bg-light font-monospace student-data-value">
-                                {{ $student->mysql_username ?? '-' }}
-                            </div>
-
-                        </div>
-
-
-                        <!-- DATABASE -->
-                        <div class="col-md-6">
-
-                            <label class="form-label text-muted">
-                                Nama Database
-                            </label>
-
-                            <div class="form-control bg-light font-monospace student-data-value">
-                                {{ $student->mysql_database ?? '-' }}
-                            </div>
-
-                        </div>
-
-
-                        <!-- PASSWORD -->
-                        <div class="col-md-6">
-
-                            <label class="form-label text-muted">
-                                Password Database
-                            </label>
-
+                    <!-- SEARCH BAR & FILTER -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-8">
                             <div class="input-group">
-
-                                <input type="password" id="databasePassword"
-                                    class="form-control bg-light font-monospace student-data-value"
-                                    value="{{ $student->mysql_password ?? '' }}" readonly>
-
-                                <button type="button" id="togglePasswordButton"
-                                    class="btn btn-outline-secondary password-toggle-btn" onclick="togglePassword()">
-                                    👁
-                                </button>
-
+                                <span class="input-group-text bg-white text-muted border-end-0">🔍</span>
+                                <input type="text" id="dbSearchInput"
+                                    class="form-control border-start-0 ps-0 custom-input"
+                                    placeholder="Cari nama database atau nama/NIM anggota...">
                             </div>
-
                         </div>
-
+                        <div class="col-md-4">
+                            <select id="dbTypeFilter" class="form-select custom-input fw-medium">
+                                <option value="all">Semua Tipe Database</option>
+                                <option value="Pribadi">Database Pribadi</option>
+                                <option value="Kelompok">Database Kelompok</option>
+                            </select>
+                        </div>
                     </div>
 
+                    <div class="table-responsive">
+                        <table class="table align-middle custom-table mb-0">
+                            <thead class="table-light text-uppercase small font-monospace">
+                                <tr>
+                                    <th>Nama Database</th>
+                                    <th>Tipe</th>
+                                    <th>Jumlah Anggota</th>
+                                    <th>Anggota (NIM & Nama)</th>
+                                    <th class="text-end">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dbTableBody">
+                                <!-- 1. DATABASE PRIBADI -->
+                                <tr class="db-row" data-type="Pribadi">
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="fs-5">🗄️</span>
+                                            <strong
+                                                class="text-primary font-monospace">{{ $student->mysql_database ?? '-' }}</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span
+                                            class="badge bg-secondary-subtle text-secondary border fw-medium px-2 py-1">Pribadi</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info text-dark rounded-pill px-3">1 Mahasiswa</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border font-monospace">
+                                            {{ $student->nim }} - {{ $student->nama }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <button type="button" class="btn btn-sm btn-outline-primary fw-bold px-3"
+                                            data-bs-toggle="modal" data-bs-target="#modalDetailPribadi">
+                                            Detail
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- 2. DATABASE KELOMPOK (LOOPING) -->
+                                @if (isset($student->groups) && $student->groups->count() > 0)
+                                    @foreach ($student->groups as $group)
+                                        <tr class="db-row" data-type="Kelompok">
+                                            <td>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="fs-5">🗄️</span>
+                                                    <!-- Menggunakan kolom 'database_name' sesuai tabel group_databases -->
+                                                    <strong
+                                                        class="text-primary font-monospace">{{ $group->database_name }}</strong>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span
+                                                    class="badge bg-primary-subtle text-primary border fw-medium px-2 py-1">Kelompok</span>
+                                            </td>
+                                            <td>
+                                                <span
+                                                    class="badge bg-info text-dark rounded-pill px-3">{{ $group->members->count() }}
+                                                    Mahasiswa</span>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-wrap gap-1">
+                                                    @foreach ($group->members as $member)
+                                                        <span class="badge bg-light text-dark border font-monospace">
+                                                            {{ $member->nim }} - {{ $member->nama }}
+                                                        </span>
+                                                    @endforeach
+                                                </div>
+                                            </td>
+                                            <td class="text-end">
+                                                <button type="button" class="btn btn-sm btn-outline-primary fw-bold px-3"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalDetailGroup{{ $group->id }}">
+                                                    Detail
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+
+                                <!-- BARIS JIKA HASIL FILTER KOSONG -->
+                                <tr id="noDbDataRow" style="display: none;">
+                                    <td colspan="5" class="text-center py-4 text-muted">
+                                        🔍 Database atau anggota tidak ditemukan.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+
+                <!-- MODAL DETAIL DATABASE PRIBADI -->
+                <div class="modal fade" id="modalDetailPribadi" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title fw-bold">Detail Database Pribadi</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted">IP Server</label>
+                                        <div class="form-control bg-light font-monospace">100.81.151.126</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted">Port</label>
+                                        <div class="form-control bg-light font-monospace">3306</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted">Username Database</label>
+                                        <div class="form-control bg-light font-monospace">
+                                            {{ $student->mysql_username ?? '-' }}</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted">Nama Database</label>
+                                        <div class="form-control bg-light font-monospace">
+                                            {{ $student->mysql_database ?? '-' }}</div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label text-muted">Password Database</label>
+                                        <div class="input-group">
+                                            <input type="password" id="modalPasswordPribadi"
+                                                class="form-control bg-light font-monospace"
+                                                value="{{ $student->mysql_password ?? '' }}" readonly>
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                onclick="toggleModalPassword('modalPasswordPribadi', this)">👁</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary fw-bold"
+                                    data-bs-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODAL DETAIL DATABASE KELOMPOK (LOOPING) -->
+                @if (isset($student->groups) && $student->groups->count() > 0)
+                    @foreach ($student->groups as $group)
+                        <div class="modal fade" id="modalDetailGroup{{ $group->id }}" tabindex="-1"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title fw-bold">Detail Database Kelompok:
+                                            {{ $group->database_name }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label text-muted">IP Server</label>
+                                                <div class="form-control bg-light font-monospace">100.81.151.126</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label text-muted">Port</label>
+                                                <div class="form-control bg-light font-monospace">3306</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label text-muted">Username Database</label>
+                                                <!-- Menggunakan username mahasiswa yang sedang login -->
+                                                <div class="form-control bg-light font-monospace">
+                                                    {{ $student->mysql_username ?? '-' }}</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label text-muted">Nama Database</label>
+                                                <div class="form-control bg-light font-monospace">
+                                                    {{ $group->database_name }}</div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label class="form-label text-muted">Password Database Kelompok</label>
+                                                <div class="input-group">
+                                                    <input type="password" id="modalPasswordGroup{{ $group->id }}"
+                                                        class="form-control bg-light font-monospace"
+                                                        value="{{ $group->password ?? '' }}" readonly>
+                                                    <button type="button" class="btn btn-outline-secondary"
+                                                        onclick="toggleModalPassword('modalPasswordGroup{{ $group->id }}', this)">👁</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary fw-bold"
+                                            data-bs-dismiss="modal">Tutup</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
 
 
                 <!-- UBAH PASSWORD -->
@@ -378,6 +501,52 @@
     <script>
         const mobileMenuButton = document.getElementById('mobileMenuButton');
         const mobileUserMenu = document.getElementById('mobileUserMenu');
+        const dbSearchInput = document.getElementById('dbSearchInput');
+        const dbTypeFilter = document.getElementById('dbTypeFilter');
+        const dbRows = document.querySelectorAll('.db-row');
+        const noDbDataRow = document.getElementById('noDbDataRow');
+
+        function filterDatabases() {
+            const searchQuery = dbSearchInput.value.toLowerCase().trim();
+            const selectedType = dbTypeFilter.value;
+            let visibleCount = 0;
+
+            dbRows.forEach(row => {
+                const rowText = row.innerText.toLowerCase();
+                const rowType = row.getAttribute('data-type');
+
+                const matchesSearch = rowText.includes(searchQuery);
+                const matchesFilter = (selectedType === 'all' || rowType === selectedType);
+
+                if (matchesSearch && matchesFilter) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            if (noDbDataRow) {
+                noDbDataRow.style.display = visibleCount === 0 ? '' : 'none';
+            }
+        }
+
+        if (dbSearchInput && dbTypeFilter) {
+            dbSearchInput.addEventListener('input', filterDatabases);
+            dbTypeFilter.addEventListener('change', filterDatabases);
+        }
+
+        // Toggle Modal Password Visibility
+        function toggleModalPassword(inputId, button) {
+            const passwordInput = document.getElementById(inputId);
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                button.classList.add('active');
+            } else {
+                passwordInput.type = 'password';
+                button.classList.remove('active');
+            }
+        }
 
         /*
         |--------------------------------------------------------------------------

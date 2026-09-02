@@ -112,7 +112,6 @@
                                         <tbody>
 
                                             @foreach (session('credentials') as $cred)
-
                                                 <tr>
 
                                                     <td>
@@ -136,7 +135,6 @@
                                                     </td>
 
                                                 </tr>
-
                                             @endforeach
 
                                         </tbody>
@@ -149,9 +147,7 @@
 
                         @endif
 
-                        <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="alert">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert">
                         </button>
 
                     </div>
@@ -322,25 +318,21 @@
                                             <div class="d-inline-flex gap-2">
 
                                                 <!-- Tombol Detail -->
-                                                <button
-                                                    type="button"
+                                                <button type="button"
                                                     class="btn btn-sm btn-outline-primary fw-bold detail-toggle"
                                                     data-target="detail-row-{{ $gDb->id }}">
                                                     Detail
                                                 </button>
 
                                                 <!-- Tombol Delete -->
-                                                <form
-                                                    action="{{ route('group-databases.destroy', $gDb->id) }}"
+                                                <form action="{{ route('group-databases.destroy', $gDb->id) }}"
                                                     method="POST"
                                                     data-confirm="Apakah Anda yakin ingin menghapus database {{ $gDb->database_name }}?">
 
                                                     @csrf
                                                     @method('DELETE')
 
-                                                    <button
-                                                        type="submit"
-                                                        class="btn btn-sm btn-outline-danger fw-bold">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger fw-bold">
                                                         Hapus
                                                     </button>
                                                 </form>
@@ -350,8 +342,7 @@
                                     </tr>
 
                                     <!-- BARIS DETAIL (DENGAN INFORMASI HOST & PORT) -->
-                                    <tr id="detail-row-{{ $gDb->id }}"
-                                        class="detail-row">
+                                    <tr id="detail-row-{{ $gDb->id }}" class="detail-row">
 
                                         <td colspan="4" class="p-0 border-0">
 
@@ -426,7 +417,6 @@
                                                             <tbody>
 
                                                                 @foreach ($gDb->students as $student)
-
                                                                     <tr>
 
                                                                         <td>
@@ -451,7 +441,6 @@
                                                                         </td>
 
                                                                     </tr>
-
                                                                 @endforeach
 
                                                             </tbody>
@@ -561,9 +550,9 @@
                                 row.innerText.toLowerCase();
 
                             row.style.display =
-                                text.includes(filter)
-                                    ? ''
-                                    : 'none';
+                                text.includes(filter) ?
+                                '' :
+                                'none';
 
                         });
 

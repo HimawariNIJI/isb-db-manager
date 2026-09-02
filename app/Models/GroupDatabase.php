@@ -11,8 +11,13 @@ class GroupDatabase extends Model
 
     protected $fillable = ['database_name', 'password'];
 
-    public function students()
+    public function members()
     {
-        return $this->belongsToMany(Student::class, 'group_database_student');
+        return $this->belongsToMany(
+            Student::class,
+            'group_database_student',
+            'group_database_id',
+            'student_id'
+        );
     }
 }

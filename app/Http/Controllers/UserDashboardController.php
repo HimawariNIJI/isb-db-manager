@@ -16,19 +16,20 @@ class UserDashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Cari data mahasiswa berdasarkan email login
-        $student = Student::where('email', $user->email)->first();
+        // Cari data mahasiswa berdasarkan email login & sertakan relasi groups + members
+        $student = Student::with(['groups.members'])
+            ->where('email', $user->email)
+            ->first();
 
         if (!$student) {
             Auth::logout();
 
-            return redirect()->route('login')
+            return redirect()->route('userlogin')
                 ->with('error', 'Data mahasiswa tidak ditemukan.');
         }
 
         return view('user.dashboard', compact('student'));
     }
-
 
     /**
      * Ubah password MySQL
@@ -105,7 +106,6 @@ class UserDashboardController extends Controller
             return redirect()
                 ->route('user.dashboard')
                 ->with('success', 'Password database berhasil diubah.');
-
         } catch (\Throwable $e) {
 
             return redirect()

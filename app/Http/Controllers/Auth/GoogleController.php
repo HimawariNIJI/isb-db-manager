@@ -28,7 +28,7 @@ class GoogleController extends Controller
 
             // 1. CEK VALIDASI DOMAIN EMAIL
             if (!Str::endsWith($email, $this->allowedDomains)) {
-                return redirect()->route('login')->with('error', 'Akses ditolak! Anda harus menggunakan email resmi universitas untuk login.');
+                return redirect()->route('userlogin')->with('error', 'Akses ditolak! Anda harus menggunakan email resmi universitas untuk login.');
             }
 
             // 2. JIKA EMAIL SESUAI, DAFARKAN / LOGIN-KAN USER
@@ -56,7 +56,7 @@ class GoogleController extends Controller
                     'Berhasil login menggunakan email universitas!'
                 );
         } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Gagal melakukan login dengan Google: ' . $e->getMessage());
+            return redirect()->route('userlogin')->with('error', 'Gagal melakukan login dengan Google: ' . $e->getMessage());
         }
     }
 }
